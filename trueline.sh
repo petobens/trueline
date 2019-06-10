@@ -1,8 +1,7 @@
 # TrueLine
-# TODO: First segment should not start with separator
-# TODO: Continuation prompt should have it's own function?
-# TODO: Add defaults (for colors, segments and icons)
+# TODO: Continuation prompt should have it's own function
 # TODO: Do some profiling
+# TODO: Add defaults (for colors, segments and icons)
 
 trueline_content() {
     fg_c="${trueline_colors[$1]}"
@@ -19,7 +18,11 @@ trueline_content() {
 }
 
 trueline_separator() {
-    trueline_content "$_last_color" "$bg_color" 1 "$trueline_separator_symbol"
+    if [[ -n "$_last_color" ]]; then
+        # Only add a separator if it's not the first section (and hence last
+        # color is not set)
+        trueline_content "$_last_color" "$bg_color" 1 "$trueline_separator_symbol"
+    fi
 }
 
 trueline_has_ssh(){
@@ -35,7 +38,8 @@ trueline_user_segment() {
     if [[ -n "$has_ssh" ]]; then
         user=" $user@$HOSTNAME"
     fi
-    segment="$(trueline_content "$fg_color" "$bg_color" 1 " $user ")"
+    segment="$(trueline_separator)"
+    segment+="$(trueline_content "$fg_color" "$bg_color" 1 " $user ")"
     PS1+="$segment"
     _last_color=$bg_color
 }
