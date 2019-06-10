@@ -1,5 +1,4 @@
 # TrueLine
-# TODO: Continuation prompt should have it's own function
 # TODO: Do some profiling
 # TODO: Add defaults (for colors, segments and icons)
 
@@ -20,7 +19,7 @@ trueline_content() {
 trueline_separator() {
     if [[ -n "$_last_color" ]]; then
         # Only add a separator if it's not the first section (and hence last
-        # color is not set)
+        # color is set/defined)
         trueline_content "$_last_color" "$bg_color" 1 "$trueline_separator_symbol"
     fi
 }
@@ -183,18 +182,23 @@ trueline_vimode_segment() {
     vimode_ins_fg=${VIMODE_INS_COLORS[0]}
     vimode_ins_bg=${VIMODE_INS_COLORS[1]}
     segment="$(trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " I " "vi")"
-    segment+="$(trueline_content "$vimode_ins_bg" "$_first_color" 1 "$trueline_separator_symbol" "vi")"
+    segment+="$(trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$trueline_separator_symbol" "vi")"
     segment+="\1\e[6 q\2" # thin vertical bar
     bind "set vi-ins-mode-string $segment"
 
     vimode_cmd_fg=${VIMODE_CMD_COLORS[0]}
     vimode_cmd_bg=${VIMODE_CMD_COLORS[1]}
     segment="$(trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " N " "vi")"
-    segment+="$(trueline_content "$vimode_cmd_bg" "$_first_color" 1 "$trueline_separator_symbol" "vi")"
+    segment+="$(trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$trueline_separator_symbol" "vi")"
     segment+="\1\e[2 q\2"  # block cursor
     bind "set vi-cmd-mode-string $segment"
     # Switch to block cursor before executing a command
     bind -m vi-insert 'RETURN: "\e\n"'
+}
+
+trueline_continuation_prompt() {
+    PS2=$(trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ... ")
+    PS2+=$(trueline_content "$_first_color_bg" Default 1 "$trueline_separator_symbol ")
 }
 
 trueline_separator_symbol=''
@@ -234,8 +238,9 @@ trueline_prompt_command() {
         segment_name=$(echo "$segment_def" | cut -d ',' -f1)
         segment_fg=$(echo "$segment_def" | cut -d ',' -f2)
         segment_bg=$(echo "$segment_def" | cut -d ',' -f3)
-        if [[ -z "$_first_color" ]]; then
-            _first_color="$segment_bg" # used by vimode
+        if [[ -z "$_first_color_fg" ]]; then
+            _first_color_fg="$segment_fg"
+            _first_color_bg="$segment_bg"
         fi
         # Note: we cannot call within a subshell because global variables
         # (such as _last_color) won't be passed along
@@ -248,12 +253,12 @@ trueline_prompt_command() {
 
     PS1+=$(trueline_content "$_last_color" Default 1 "$trueline_separator_symbol")
     PS1+=" "  # non-breakable space
-    unset _first_color
+    trueline_continuation_prompt
+
+    unset _first_color_fg
+    unset _first_color_bg
     unset _last_color
     unset _exit_status
 }
 unset PROMPT_COMMAND
 PROMPT_COMMAND=trueline_prompt_command
-
-# Continuation prompt
-PS2=$(trueline_content Black White 1 " ... ")$(trueline_content White Black 1 "$trueline_separator_symbol ")
