@@ -1,3 +1,5 @@
+# shellcheck disable=SC2155
+
 # TrueLine
 # FIXME: what about thin/empty segment separators such as |
 
@@ -36,14 +38,14 @@ _trueline_has_ssh() {
     fi
 }
 _trueline_user_segment() {
-    fg_color="$1"
-    bg_color="$2"
-    user="$USER"
-    has_ssh="$(_trueline_has_ssh)"
+    local fg_color="$1"
+    local bg_color="$2"
+    local user="$USER"
+    local has_ssh="$(_trueline_has_ssh)"
     if [[ -n "$has_ssh" ]]; then
         user="${TRUELINE_SYMBOLS[ssh]} $user@$HOSTNAME"
     fi
-    segment="$(_trueline_separator)"
+    local segment="$(_trueline_separator)"
     segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $user ")"
     PS1+="$segment"
     _last_color=$bg_color
@@ -53,11 +55,11 @@ _trueline_has_venv() {
     printf "%s" "${VIRTUAL_ENV##*/}"
 }
 _trueline_venv_segment() {
-    venv="$(_trueline_has_venv)"
+    local venv="$(_trueline_has_venv)"
     if [[ -n "$venv" ]]; then
-        fg_color="$1"
-        bg_color="$2"
-        segment="$(_trueline_separator)"
+        local fg_color="$1"
+        local bg_color="$2"
+        local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " ${TRUELINE_SYMBOLS[venv]} $venv ")"
         PS1+="$segment"
         _last_color=$bg_color
@@ -105,19 +107,19 @@ _trueline_git_remote_icon() {
     echo "$remote_icon"
 }
 _trueline_git_segment() {
-    branch="$(_trueline_has_git_branch)"
+    local branch="$(_trueline_has_git_branch)"
     if [[ -n $branch ]]; then
-        fg_color="$1"
-        bg_color="$2"
-        segment="$(_trueline_separator)"
+        local fg_color="$1"
+        local bg_color="$2"
+        local segment="$(_trueline_separator)"
 
-        branch_icon="$(_trueline_git_remote_icon)"
+        local branch_icon="$(_trueline_git_remote_icon)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $branch_icon $branch ")"
-        mod_files="$(_trueline_git_mod_files)"
+        local mod_files="$(_trueline_git_mod_files)"
         if [[ -n "$mod_files" ]]; then
             segment+="$(_trueline_content "$TRUELINE_GIT_MODIFIED_COLOR" "$bg_color" 2 "$mod_files")"
         fi
-        behind_ahead="$(_trueline_git_behind_ahead "$branch")"
+        local behind_ahead="$(_trueline_git_behind_ahead "$branch")"
         if [[ -n "$behind_ahead" ]]; then
             segment+="$(_trueline_content "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" "$bg_color" 2 "$behind_ahead")"
         fi
@@ -127,25 +129,26 @@ _trueline_git_segment() {
 }
 
 _trueline_working_dir_segment() {
-    fg_color="$1"
-    bg_color="$2"
-    segment="$(_trueline_separator)"
-    wd_separator=${TRUELINE_SYMBOLS[working_dir_separator]}
+    local fg_color="$1"
+    local bg_color="$2"
+    local segment="$(_trueline_separator)"
+    local wd_separator=${TRUELINE_SYMBOLS[working_dir_separator]}
 
-    p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]} }"
+    local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]} }"
+    local arr=
     IFS='/' read -r -a arr <<< "$p"
-    path_size="${#arr[@]}"
+    local path_size="${#arr[@]}"
     if [[ "$path_size" -eq 1 ]]; then
-        path_="\[\033[1m\]${arr[0]:=/}"
+        local path_="\[\033[1m\]${arr[0]:=/}"
     elif [[ "$path_size" -eq 2 ]]; then
-        path_="${arr[0]:=/} $wd_separator \[\033[1m\]${arr[-1]}"
+        local path_="${arr[0]:=/} $wd_separator \[\033[1m\]${arr[-1]}"
     else
         if [[ "$path_size" -gt 3 ]]; then
             p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
         fi
-        curr=$(basename "$p")
+        local curr=$(basename "$p")
         p=$(dirname "$p")
-        path_="${p//\// $wd_separator } $wd_separator \[\033[1m\]$curr"
+        local path_="${p//\// $wd_separator } $wd_separator \[\033[1m\]$curr"
         if [[ "${p:0:1}" = '/' ]]; then
             path_="/$path_"
         fi
@@ -161,11 +164,11 @@ _trueline_is_read_only() {
     fi
 }
 _trueline_read_only_segment() {
-    read_only="$(_trueline_is_read_only)"
+    local read_only="$(_trueline_is_read_only)"
     if [[ -n $read_only ]]; then
-        fg_color="$1"
-        bg_color="$2"
-        segment="$(_trueline_separator)"
+        local fg_color="$1"
+        local bg_color="$2"
+        local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " ${TRUELINE_SYMBOLS[read_only]} ")"
         PS1+="$segment"
         _last_color=$bg_color
@@ -174,9 +177,9 @@ _trueline_read_only_segment() {
 
 _trueline_exit_status_segment() {
     if [[ "$_exit_status" != 0 ]]; then
-        fg_color="$1"
-        bg_color="$2"
-        segment="$(_trueline_separator)"
+        local fg_color="$1"
+        local bg_color="$2"
+        local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $_exit_status ")"
         PS1+="$segment"
         _last_color=$bg_color
@@ -184,18 +187,18 @@ _trueline_exit_status_segment() {
 }
 
 _trueline_vimode_segment() {
-    seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
+    local seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
 
     bind "set show-mode-in-prompt on"
-    vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
-    vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
-    segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
+    local vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
+    local vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
+    local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
     segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
     segment+="\1\e[6 q\2" # thin vertical bar
     bind "set vi-ins-mode-string $segment"
 
-    vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
-    vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
+    local vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
+    local vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
     segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
     segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
     segment+="\1\e[2 q\2"  # block cursor
@@ -217,10 +220,12 @@ _trueline_continuation_prompt() {
 _trueline_prompt_command() {
     _exit_status="$?"
     PS1=""
+
+    local segment_def=
     for segment_def in "${TRUELINE_SEGMENTS[@]}"; do
-        segment_name=$(echo "$segment_def" | cut -d ',' -f1)
-        segment_fg=$(echo "$segment_def" | cut -d ',' -f2)
-        segment_bg=$(echo "$segment_def" | cut -d ',' -f3)
+        local segment_name=$(echo "$segment_def" | cut -d ',' -f1)
+        local segment_fg=$(echo "$segment_def" | cut -d ',' -f2)
+        local segment_bg=$(echo "$segment_def" | cut -d ',' -f3)
         if [[ -z "$_first_color_fg" ]]; then
             _first_color_fg="$segment_fg"
             _first_color_bg="$segment_bg"
