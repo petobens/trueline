@@ -3,6 +3,9 @@
 # FIXME: what about thin/empty segment separators such as |
 # TODO: See about using https://github.com/romkatv/gitstatus ?
 
+#---------+
+# Helpers |
+#---------+
 _trueline_content() {
     fg_c="${TRUELINE_COLORS[$1]}"
     bg_c="${TRUELINE_COLORS[$2]}"
@@ -16,6 +19,7 @@ _trueline_content() {
     fi
     echo "$esc_seq_start\033[38;2;$fg_c;48;2;$bg_c;$style$esc_seq_end$content$esc_seq_start\033[0m$esc_seq_end"
 }
+
 _trueline_separator() {
     if [[ -n "$_last_color" ]]; then
         # Only add a separator if it's not the first section (and hence last
@@ -24,6 +28,10 @@ _trueline_separator() {
     fi
 }
 
+
+#----------+
+# Segments |
+#----------+
 _trueline_has_ssh() {
     if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
         echo 'has_ssh'
@@ -64,7 +72,7 @@ _trueline_has_git_branch() {
 _trueline_git_mod_files() {
     nr_mod_files="$(git diff --name-only --diff-filter=M 2> /dev/null | wc -l )"
     mod_files=''
-    if [ ! "$nr_mod_files" -eq 0 ]; then
+    if [[ ! "$nr_mod_files" -eq 0 ]]; then
         mod_files="${TRUELINE_SYMBOLS[git_modified]} $nr_mod_files "
     fi
     echo "$mod_files"
@@ -77,10 +85,10 @@ _trueline_git_behind_ahead() {
         nr_behind="${nr_behind_ahead%	*}"
         nr_ahead="${nr_behind_ahead#*	}"
         git_behind_ahead=''
-        if [ ! "$nr_behind" -eq 0 ]; then
+        if [[ ! "$nr_behind" -eq 0 ]]; then
             git_behind_ahead+="${TRUELINE_SYMBOLS[git_behind]} $nr_behind "
         fi
-        if [ ! "$nr_ahead" -eq 0 ]; then
+        if [[ ! "$nr_ahead" -eq 0 ]]; then
             git_behind_ahead+="${TRUELINE_SYMBOLS[git_ahead]} $nr_ahead "
         fi
         echo "$git_behind_ahead"
@@ -109,11 +117,11 @@ _trueline_git_segment() {
         segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $branch_icon $branch ")"
         mod_files="$(_trueline_git_mod_files)"
         if [[ -n "$mod_files" ]]; then
-            segment+="$(_trueline_content Red "$bg_color" 2 "$mod_files")"
+            segment+="$(_trueline_content "$TRUELINE_GIT_MODIFIED_COLOR" "$bg_color" 2 "$mod_files")"
         fi
         behind_ahead="$(_trueline_git_behind_ahead "$branch")"
         if [[ -n "$behind_ahead" ]]; then
-            segment+="$(_trueline_content Purple "$bg_color" 2 "$behind_ahead")"
+            segment+="$(_trueline_content "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" "$bg_color" 2 "$behind_ahead")"
         fi
         PS1+="$segment"
         _last_color=$bg_color
@@ -129,12 +137,12 @@ _trueline_working_dir_segment() {
     p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]} }"
     IFS='/' read -r -a arr <<< "$p"
     path_size="${#arr[@]}"
-    if [ "$path_size" -eq 1 ]; then
+    if [[ "$path_size" -eq 1 ]]; then
         path_="\[\033[1m\]${arr[0]:=/}"
-    elif [ "$path_size" -eq 2 ]; then
+    elif [[ "$path_size" -eq 2 ]]; then
         path_="${arr[0]:=/} $wd_separator \[\033[1m\]${arr[-1]}"
     else
-        if [ "$path_size" -gt 3 ]; then
+        if [[ "$path_size" -gt 3 ]]; then
             p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
         fi
         curr=$(basename "$p")
@@ -167,7 +175,7 @@ _trueline_read_only_segment() {
 }
 
 _trueline_exit_status_segment() {
-    if [ "$_exit_status" != 0 ]; then
+    if [[ "$_exit_status" != 0 ]]; then
         fg_color="$1"
         bg_color="$2"
         segment="$(_trueline_separator)"
@@ -179,6 +187,7 @@ _trueline_exit_status_segment() {
 
 _trueline_vimode_segment() {
     seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
+
     bind "set show-mode-in-prompt on"
     vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
     vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
@@ -193,57 +202,20 @@ _trueline_vimode_segment() {
     segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
     segment+="\1\e[2 q\2"  # block cursor
     bind "set vi-cmd-mode-string $segment"
+
     # Switch to block cursor before executing a command
     bind -m vi-insert 'RETURN: "\e\n"'
 }
 
 
-declare -A TRUELINE_COLORS=(
-    [Black]='36;39;46' #24272e
-    [CursorGrey]='40;44;52' #282c34
-    [Default]='36;39;46' #24272e
-    [Green]='152;195;121' #98c379
-    [Grey]='171;178;191' #abb2bf
-    [LightBlue]='97;175;239' #61afef
-    [Mono]='130;137;151' #828997
-    [Orange]='209;154;102' #d19a66
-    [Purple]='198;120;221' #c678dd
-    [Red]='224;108;117' #e06c75
-    [SpecialGrey]='59;64;72' #3b4048
-    [White]='208;208;208' #d0d0d0
-)
-declare -A TRUELINE_SYMBOLS=(
-    [segment_separator]=''
-    [ssh]=''
-    [venv]=''
-    [git_branch]=''
-    [git_modified]='✚'
-    [git_behind]=''
-    [git_ahead]=''
-    [working_dir_home]=''
-    [working_dir_folder]=''
-    [working_dir_separator]=''
-    [read_only]=''
-    [vimode_ins]='I'
-    [vimode_cmd]='N'
-)
-declare -a TRUELINE_SEGMENTS=(
-    'user,Black,White'
-    'venv,Black,Purple'
-    'git,Grey,SpecialGrey'
-    'working_dir,Mono,CursorGrey'
-    'read_only,Black,Orange'
-    'exit_status,Black,Red'
-
-)
-TRUELINE_SHOW_VIMODE=true
-TRUELINE_VIMODE_INS_COLORS=('Black' 'LightBlue')
-TRUELINE_VIMODE_CMD_COLORS=('Black' 'Green')
-
+#-------------+
+# PS1 and PS2 |
+#-------------+
 _trueline_continuation_prompt() {
     PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ... ")
     PS2+=$(_trueline_content "$_first_color_bg" Default 1 "${TRUELINE_SYMBOLS[segment_separator]} ")
 }
+
 _trueline_prompt_command() {
     _exit_status="$?"
     PS1=""
@@ -273,5 +245,58 @@ _trueline_prompt_command() {
     unset _last_color
     unset _exit_status
 }
+
+
+#---------------+
+# Configuration |
+#---------------+
+declare -A TRUELINE_COLORS=(
+    [Black]='36;39;46' #24272e
+    [CursorGrey]='40;44;52' #282c34
+    [Default]='36;39;46' #24272e
+    [Green]='152;195;121' #98c379
+    [Grey]='171;178;191' #abb2bf
+    [LightBlue]='97;175;239' #61afef
+    [Mono]='130;137;151' #828997
+    [Orange]='209;154;102' #d19a66
+    [Purple]='198;120;221' #c678dd
+    [Red]='224;108;117' #e06c75
+    [SpecialGrey]='59;64;72' #3b4048
+    [White]='208;208;208' #d0d0d0
+)
+
+declare -A TRUELINE_SYMBOLS=(
+    [segment_separator]=''
+    [ssh]=''
+    [venv]=''
+    [git_branch]=''
+    [git_modified]='✚'
+    [git_behind]=''
+    [git_ahead]=''
+    [working_dir_home]=''
+    [working_dir_folder]=''
+    [working_dir_separator]=''
+    [read_only]=''
+    [vimode_ins]='I'
+    [vimode_cmd]='N'
+)
+
+declare -a TRUELINE_SEGMENTS=(
+    'user,Black,White'
+    'venv,Black,Purple'
+    'git,Grey,SpecialGrey'
+    'working_dir,Mono,CursorGrey'
+    'read_only,Black,Orange'
+    'exit_status,Black,Red'
+
+)
+
+TRUELINE_SHOW_VIMODE=true
+TRUELINE_VIMODE_INS_COLORS=('Black' 'LightBlue')
+TRUELINE_VIMODE_CMD_COLORS=('Black' 'Green')
+TRUELINE_GIT_MODIFIED_COLOR='Red'
+TRUELINE_GIT_BEHIND_AHEAD_COLOR='Purple'
+
+# Actually set the prompt:
 unset PROMPT_COMMAND
 PROMPT_COMMAND=_trueline_prompt_command
