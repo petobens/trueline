@@ -1,9 +1,4 @@
 # shellcheck disable=SC2155
-
-# TrueLine
-# Allow to define cursor shape
-# FIXME: what about thin/empty segment separators such as |
-
 #---------+
 # Helpers |
 #---------+
@@ -187,6 +182,18 @@ _trueline_exit_status_segment() {
     fi
 }
 
+_trueline_vimode_cursor_shape() {
+    shape="$1"
+    case "$shape" in
+        under)
+            cursor_parameter=4 ;;
+        vert)
+            cursor_parameter=6 ;;
+        **)
+            cursor_parameter=2 ;;
+    esac
+    echo "\1\e[$cursor_parameter q\2"
+}
 _trueline_vimode_segment() {
     local seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
 
@@ -195,14 +202,14 @@ _trueline_vimode_segment() {
     local vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
     local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
     segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
-    segment+="\1\e[6 q\2" # thin vertical bar
+    segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_INS_CURSOR")"
     bind "set vi-ins-mode-string $segment"
 
     local vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
     local vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
     segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
     segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
-    segment+="\1\e[2 q\2"  # block cursor
+    segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_CMD_CURSOR")"
     bind "set vi-cmd-mode-string $segment"
 
     # Switch to block cursor before executing a command
@@ -312,6 +319,12 @@ if [[ -z "$TRUELINE_VIMODE_INS_COLORS" ]]; then
 fi
 if [[ -z "$TRUELINE_VIMODE_CMD_COLORS" ]]; then
     TRUELINE_VIMODE_CMD_COLORS=('black' 'green')
+fi
+if [[ -z "$TRUELINE_VIMODE_INS_CURSOR" ]]; then
+    TRUELINE_VIMODE_INS_CURSOR='vert'
+fi
+if [[ -z "$TRUELINE_VIMODE_CMD_CURSOR" ]]; then
+    TRUELINE_VIMODE_CMD_CURSOR='block'
 fi
 
 if [[ -z "$TRUELINE_GIT_MODIFIED_COLOR" ]]; then
