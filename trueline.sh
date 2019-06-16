@@ -1,6 +1,7 @@
 # shellcheck disable=SC2155
 
 # TrueLine
+# Allow to define cursor shape
 # FIXME: what about thin/empty segment separators such as |
 
 #---------+
@@ -214,7 +215,7 @@ _trueline_vimode_segment() {
 #-------------+
 _trueline_continuation_prompt() {
     PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ... ")
-    PS2+=$(_trueline_content "$_first_color_bg" Default 1 "${TRUELINE_SYMBOLS[segment_separator]} ")
+    PS2+=$(_trueline_content "$_first_color_bg" default 1 "${TRUELINE_SYMBOLS[segment_separator]} ")
 }
 
 _trueline_prompt_command() {
@@ -239,7 +240,7 @@ _trueline_prompt_command() {
         _trueline_vimode_segment
     fi
 
-    PS1+=$(_trueline_content "$_last_color" Default 1 "${TRUELINE_SYMBOLS[segment_separator]}")
+    PS1+=$(_trueline_content "$_last_color" default 1 "${TRUELINE_SYMBOLS[segment_separator]}")
     PS1+=" "  # non-breakable space
     _trueline_continuation_prompt
 
@@ -255,50 +256,50 @@ _trueline_prompt_command() {
 #---------------+
 if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_COLORS=(
-        [Black]='36;39;46' #24272e
-        [CursorGrey]='40;44;52' #282c34
-        [Default]='36;39;46' #24272e
-        [Green]='152;195;121' #98c379
-        [Grey]='171;178;191' #abb2bf
-        [LightBlue]='97;175;239' #61afef
-        [Mono]='130;137;151' #828997
-        [Orange]='209;154;102' #d19a66
-        [Purple]='198;120;221' #c678dd
-        [Red]='224;108;117' #e06c75
-        [SpecialGrey]='59;64;72' #3b4048
-        [White]='208;208;208' #d0d0d0
+        [black]='36;39;46' #24272e
+        [cursor_grey]='40;44;52' #282c34
+        [default]='36;39;46' #24272e
+        [green]='152;195;121' #98c379
+        [grey]='171;178;191' #abb2bf
+        [light_blue]='97;175;239' #61afef
+        [mono]='130;137;151' #828997
+        [orange]='209;154;102' #d19a66
+        [purple]='198;120;221' #c678dd
+        [red]='224;108;117' #e06c75
+        [special_grey]='59;64;72' #3b4048
+        [white]='208;208;208' #d0d0d0
     )
 fi
 
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=(
+        [git_ahead]=''
+        [git_behind]=''
+        [git_bitbucket]=''
+        [git_branch]=''
+        [git_github]=''
+        [git_gitlab]=''
+        [git_modified]='✚'
+        [read_only]=''
         [segment_separator]=''
         [ssh]=''
         [venv]=''
-        [git_branch]=''
-        [git_github]=''
-        [git_bitbucket]=''
-        [git_gitlab]=''
-        [git_modified]='✚'
-        [git_behind]=''
-        [git_ahead]=''
-        [working_dir_home]=''
-        [working_dir_folder]=''
-        [working_dir_separator]=''
-        [read_only]=''
-        [vimode_ins]='I'
         [vimode_cmd]='N'
+        [vimode_ins]='I'
+        [working_dir_folder]=''
+        [working_dir_home]=''
+        [working_dir_separator]=''
     )
 fi
 
 if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     declare -a TRUELINE_SEGMENTS=(
-        'user,Black,White'
-        'venv,Black,Purple'
-        'git,Grey,SpecialGrey'
-        'working_dir,Mono,CursorGrey'
-        'read_only,Black,Orange'
-        'exit_status,Black,Red'
+        'user,black,white'
+        'venv,black,purple'
+        'git,grey,special_grey'
+        'working_dir,mono,cursor_grey'
+        'read_only,black,orange'
+        'exit_status,black,red'
 
     )
 fi
@@ -307,17 +308,17 @@ if [[ -z "$TRUELINE_SHOW_VIMODE" ]]; then
     TRUELINE_SHOW_VIMODE=true
 fi
 if [[ -z "$TRUELINE_VIMODE_INS_COLORS" ]]; then
-    TRUELINE_VIMODE_INS_COLORS=('Black' 'LightBlue')
+    TRUELINE_VIMODE_INS_COLORS=('black' 'light_blue')
 fi
 if [[ -z "$TRUELINE_VIMODE_CMD_COLORS" ]]; then
-    TRUELINE_VIMODE_CMD_COLORS=('Black' 'Green')
+    TRUELINE_VIMODE_CMD_COLORS=('black' 'green')
 fi
 
 if [[ -z "$TRUELINE_GIT_MODIFIED_COLOR" ]]; then
-    TRUELINE_GIT_MODIFIED_COLOR='Red'
+    TRUELINE_GIT_MODIFIED_COLOR='red'
 fi
 if [[ -z "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" ]]; then
-    TRUELINE_GIT_BEHIND_AHEAD_COLOR='Purple'
+    TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'
 fi
 
 # Actually set the prompt:
