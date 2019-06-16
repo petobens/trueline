@@ -1,7 +1,5 @@
 # TrueLine
-# TODO: check for vi mode/ set it
 # FIXME: what about thin/empty segment separators such as |
-# TODO: See about using https://github.com/romkatv/gitstatus ?
 
 #---------+
 # Helpers |
@@ -98,11 +96,11 @@ _trueline_git_remote_icon() {
     remote=$(command git ls-remote --get-url 2> /dev/null)
     remote_icon="${TRUELINE_SYMBOLS[git_branch]}"
     if [[ "$remote" =~ "github" ]]; then
-        remote_icon=' '
+        remote_icon="${TRUELINE_SYMBOLS[git_github]} "
     elif [[ "$remote" =~ "bitbucket" ]]; then
-        remote_icon=' '
+        remote_icon="${TRUELINE_SYMBOLS[git_bitbucket]} "
     elif [[ "$remote" =~ "gitlab" ]]; then
-        remote_icon=' '
+        remote_icon="${TRUELINE_SYMBOLS[git_gitlab]} "
     fi
     echo "$remote_icon"
 }
@@ -250,52 +248,72 @@ _trueline_prompt_command() {
 #---------------+
 # Configuration |
 #---------------+
-declare -A TRUELINE_COLORS=(
-    [Black]='36;39;46' #24272e
-    [CursorGrey]='40;44;52' #282c34
-    [Default]='36;39;46' #24272e
-    [Green]='152;195;121' #98c379
-    [Grey]='171;178;191' #abb2bf
-    [LightBlue]='97;175;239' #61afef
-    [Mono]='130;137;151' #828997
-    [Orange]='209;154;102' #d19a66
-    [Purple]='198;120;221' #c678dd
-    [Red]='224;108;117' #e06c75
-    [SpecialGrey]='59;64;72' #3b4048
-    [White]='208;208;208' #d0d0d0
-)
+if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
+    declare -A TRUELINE_COLORS=(
+        [Black]='36;39;46' #24272e
+        [CursorGrey]='40;44;52' #282c34
+        [Default]='36;39;46' #24272e
+        [Green]='152;195;121' #98c379
+        [Grey]='171;178;191' #abb2bf
+        [LightBlue]='97;175;239' #61afef
+        [Mono]='130;137;151' #828997
+        [Orange]='209;154;102' #d19a66
+        [Purple]='198;120;221' #c678dd
+        [Red]='224;108;117' #e06c75
+        [SpecialGrey]='59;64;72' #3b4048
+        [White]='208;208;208' #d0d0d0
+    )
+fi
 
-declare -A TRUELINE_SYMBOLS=(
-    [segment_separator]=''
-    [ssh]=''
-    [venv]=''
-    [git_branch]=''
-    [git_modified]='✚'
-    [git_behind]=''
-    [git_ahead]=''
-    [working_dir_home]=''
-    [working_dir_folder]=''
-    [working_dir_separator]=''
-    [read_only]=''
-    [vimode_ins]='I'
-    [vimode_cmd]='N'
-)
+if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
+    declare -A TRUELINE_SYMBOLS=(
+        [segment_separator]=''
+        [ssh]=''
+        [venv]=''
+        [git_branch]=''
+        [git_github]=''
+        [git_bitbucket]=''
+        [git_gitlab]=''
+        [git_modified]='✚'
+        [git_behind]=''
+        [git_ahead]=''
+        [working_dir_home]=''
+        [working_dir_folder]=''
+        [working_dir_separator]=''
+        [read_only]=''
+        [vimode_ins]='I'
+        [vimode_cmd]='N'
+    )
+fi
 
-declare -a TRUELINE_SEGMENTS=(
-    'user,Black,White'
-    'venv,Black,Purple'
-    'git,Grey,SpecialGrey'
-    'working_dir,Mono,CursorGrey'
-    'read_only,Black,Orange'
-    'exit_status,Black,Red'
+if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
+    declare -a TRUELINE_SEGMENTS=(
+        'user,Black,White'
+        'venv,Black,Purple'
+        'git,Grey,SpecialGrey'
+        'working_dir,Mono,CursorGrey'
+        'read_only,Black,Orange'
+        'exit_status,Black,Red'
 
-)
+    )
+fi
 
-TRUELINE_SHOW_VIMODE=true
-TRUELINE_VIMODE_INS_COLORS=('Black' 'LightBlue')
-TRUELINE_VIMODE_CMD_COLORS=('Black' 'Green')
-TRUELINE_GIT_MODIFIED_COLOR='Red'
-TRUELINE_GIT_BEHIND_AHEAD_COLOR='Purple'
+if [[ -z "$TRUELINE_SHOW_VIMODE" ]]; then
+    TRUELINE_SHOW_VIMODE=true
+fi
+if [[ -z "$TRUELINE_VIMODE_INS_COLORS" ]]; then
+    TRUELINE_VIMODE_INS_COLORS=('Black' 'LightBlue')
+fi
+if [[ -z "$TRUELINE_VIMODE_CMD_COLORS" ]]; then
+    TRUELINE_VIMODE_CMD_COLORS=('Black' 'Green')
+fi
+
+if [[ -z "$TRUELINE_GIT_MODIFIED_COLOR" ]]; then
+    TRUELINE_GIT_MODIFIED_COLOR='Red'
+fi
+if [[ -z "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" ]]; then
+    TRUELINE_GIT_BEHIND_AHEAD_COLOR='Purple'
+fi
 
 # Actually set the prompt:
 unset PROMPT_COMMAND
