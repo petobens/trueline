@@ -221,7 +221,7 @@ _trueline_vimode_segment() {
 # PS1 and PS2 |
 #-------------+
 _trueline_continuation_prompt() {
-    PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ... ")
+    PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ${TRUELINE_SYMBOLS[ps2]} ")
     PS2+=$(_trueline_content "$_first_color_bg" default 1 "${TRUELINE_SYMBOLS[segment_separator]} ")
 }
 
@@ -287,6 +287,7 @@ if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
         [git_github]=''
         [git_gitlab]=''
         [git_modified]='✚'
+        [ps2]='...'
         [read_only]=''
         [segment_separator]=''
         [ssh]=''
