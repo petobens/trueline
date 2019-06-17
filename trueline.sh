@@ -130,7 +130,7 @@ _trueline_working_dir_segment() {
     local segment="$(_trueline_separator)"
     local wd_separator=${TRUELINE_SYMBOLS[working_dir_separator]}
 
-    local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]} }"
+    local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]}}"
     local arr=
     IFS='/' read -r -a arr <<< "$p"
     local path_size="${#arr[@]}"
