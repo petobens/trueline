@@ -195,25 +195,29 @@ _trueline_vimode_cursor_shape() {
     echo "\1\e[$cursor_parameter q\2"
 }
 _trueline_vimode_segment() {
-    local seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
+    if [[ "$TRUELINE_SHOW_VIMODE" = true ]]; then
+        local seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
 
-    bind "set show-mode-in-prompt on"
-    local vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
-    local vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
-    local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
-    segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
-    segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_INS_CURSOR")"
-    bind "set vi-ins-mode-string $segment"
+        bind "set show-mode-in-prompt on"
+        local vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
+        local vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
+        local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
+        segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
+        segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_INS_CURSOR")"
+        bind "set vi-ins-mode-string $segment"
 
-    local vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
-    local vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
-    segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
-    segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
-    segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_CMD_CURSOR")"
-    bind "set vi-cmd-mode-string $segment"
+        local vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
+        local vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
+        segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
+        segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
+        segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_CMD_CURSOR")"
+        bind "set vi-cmd-mode-string $segment"
 
-    # Switch to block cursor before executing a command
-    bind -m vi-insert 'RETURN: "\e\n"'
+        # Switch to block cursor before executing a command
+        bind -m vi-insert 'RETURN: "\e\n"'
+    else
+        bind "set show-mode-in-prompt off"
+    fi
 }
 
 
@@ -243,10 +247,7 @@ _trueline_prompt_command() {
         '_trueline_'"$segment_name"'_segment' "$segment_fg" "$segment_bg"
     done
 
-    if [[ "$TRUELINE_SHOW_VIMODE" = true ]]; then
-        _trueline_vimode_segment
-    fi
-
+    _trueline_vimode_segment
     PS1+=$(_trueline_content "$_last_color" default 1 "${TRUELINE_SYMBOLS[segment_separator]}")
     PS1+=" "  # non-breakable space
     _trueline_continuation_prompt
@@ -313,7 +314,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
 fi
 
 if [[ -z "$TRUELINE_SHOW_VIMODE" ]]; then
-    TRUELINE_SHOW_VIMODE=true
+    TRUELINE_SHOW_VIMODE=false
 fi
 if [[ -z "$TRUELINE_VIMODE_INS_COLORS" ]]; then
     TRUELINE_VIMODE_INS_COLORS=('black' 'light_blue')
