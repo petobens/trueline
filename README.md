@@ -9,7 +9,7 @@ Trueline also adds the ability to use RGB color codes, expands icon/glyph usage 
 prompt segments (inspired by [Powerlevel9k](https://github.com/bhilburn/powerlevel9k))
 and, among other goodies, shows the current input mode (when in vi-mode).
 
-![](https://user-images.githubusercontent.com/2583971/59571212-e12feb00-9078-11e9-99df-41b4f8c9ff9f.png)
+![](https://user-images.githubusercontent.com/2583971/59619548-25ff6480-9101-11e9-8c77-5733f094f39e.png)
 
 ## Installation
 
