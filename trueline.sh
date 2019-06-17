@@ -279,6 +279,18 @@ if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
     )
 fi
 
+if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
+    declare -a TRUELINE_SEGMENTS=(
+        'user,black,white'
+        'venv,black,purple'
+        'git,grey,special_grey'
+        'working_dir,mono,cursor_grey'
+        'read_only,black,orange'
+        'exit_status,black,red'
+
+    )
+fi
+
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=(
         [git_ahead]=''
@@ -298,18 +310,6 @@ if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
         [working_dir_folder]=''
         [working_dir_home]=''
         [working_dir_separator]=''
-    )
-fi
-
-if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
-    declare -a TRUELINE_SEGMENTS=(
-        'user,black,white'
-        'venv,black,purple'
-        'git,grey,special_grey'
-        'working_dir,mono,cursor_grey'
-        'read_only,black,orange'
-        'exit_status,black,red'
-
     )
 fi
 
