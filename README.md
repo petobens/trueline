@@ -67,7 +67,7 @@ TRUELINE_SHOW_VIMODE=false
 
 _trueline_time_segment() {
     local prompt_time="\t"
-    if [[ -n $prompt_time ]]; then
+    if [[ -n "$prompt_time" ]]; then
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
@@ -199,6 +199,9 @@ these, along with their default values, are:
         modified files.
         - `TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'`: foreground color for symbol and
         number of commits behind/ahead.
+    - user:
+        - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
+        background colors.
 
 ### Extensions
 
@@ -207,7 +210,7 @@ New segments can be easily added to the prompt by following this template:
 ```bash
 _trueline_new_segment_name_segment() {
     local some_content=$(...)
-    if [[ -n $some_content ]]; then
+    if [[ -n "$some_content" ]]; then
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"

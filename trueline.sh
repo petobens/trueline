@@ -28,6 +28,11 @@ _trueline_separator() {
 #----------+
 # Segments |
 #----------+
+_trueline_is_root() {
+    if [[ "${EUID}" -eq 0 ]]; then
+        echo 'is_root'
+    fi
+}
 _trueline_has_ssh() {
     if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
         echo 'has_ssh'
@@ -37,6 +42,14 @@ _trueline_user_segment() {
     local fg_color="$1"
     local bg_color="$2"
     local user="$USER"
+    local is_root="$(_trueline_is_root)"
+    if [[ -n "$is_root" ]]; then
+        if [[ -z "$user" ]]; then
+            user='root'
+        fi
+        fg_color=${TRUELINE_USER_ROOT_COLORS[0]}
+        bg_color=${TRUELINE_USER_ROOT_COLORS[1]}
+    fi
     local has_ssh="$(_trueline_has_ssh)"
     if [[ -n "$has_ssh" ]]; then
         user="${TRUELINE_SYMBOLS[ssh]} $user@$HOSTNAME"
@@ -334,6 +347,10 @@ if [[ -z "$TRUELINE_GIT_MODIFIED_COLOR" ]]; then
 fi
 if [[ -z "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" ]]; then
     TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'
+fi
+
+if [[ -z "$TRUELINE_USER_ROOT_COLORS" ]]; then
+    TRUELINE_USER_ROOT_COLORS=('black' 'red')
 fi
 
 # Actually set the prompt:
