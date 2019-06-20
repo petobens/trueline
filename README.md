@@ -195,6 +195,9 @@ these, along with their default values, are:
     values are `vert`, `block` and `under`).
 - In-segment options: the following segments have (sub)settings of their own
     - git:
+        - `TRUELINE_GIT_SHOW_STATUS_NUMBERS=true`: boolean variable that determines
+        whether to show (or not) the actual number of modified files and commits
+        behind/ahead next to the corresponding modified-behind/ahead status symbol.
         - `TRUELINE_GIT_MODIFIED_COLOR='red'`: foreground color for symbol and number of
         modified files.
         - `TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'`: foreground color for symbol and
@@ -202,6 +205,8 @@ these, along with their default values, are:
     - user:
         - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
         background colors.
+        - `TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
+        determines whether to add (or not) a space before and after the path separator.
 
 ### Extensions
 

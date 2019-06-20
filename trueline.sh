@@ -82,7 +82,10 @@ _trueline_git_mod_files() {
     nr_mod_files="$(git diff --name-only --diff-filter=M 2> /dev/null | wc -l )"
     mod_files=''
     if [[ ! "$nr_mod_files" -eq 0 ]]; then
-        mod_files="${TRUELINE_SYMBOLS[git_modified]} $nr_mod_files "
+        mod_files="${TRUELINE_SYMBOLS[git_modified]} "
+        if [[ "$TRUELINE_GIT_SHOW_STATUS_NUMBERS" = true ]]; then
+            mod_files+="$nr_mod_files "
+        fi
     fi
     echo "$mod_files"
 }
@@ -95,10 +98,18 @@ _trueline_git_behind_ahead() {
         nr_ahead="${nr_behind_ahead#*	}"
         git_behind_ahead=''
         if [[ ! "$nr_behind" -eq 0 ]]; then
-            git_behind_ahead+="${TRUELINE_SYMBOLS[git_behind]} $nr_behind "
+            git_behind_ahead+="${TRUELINE_SYMBOLS[git_behind]} "
+            if [[ "$TRUELINE_GIT_SHOW_STATUS_NUMBERS" = true ]]; then
+                git_behind_ahead+="$nr_behind "
+
+            fi
         fi
         if [[ ! "$nr_ahead" -eq 0 ]]; then
-            git_behind_ahead+="${TRUELINE_SYMBOLS[git_ahead]} $nr_ahead "
+            git_behind_ahead+="${TRUELINE_SYMBOLS[git_ahead]} "
+            if [[ "$TRUELINE_GIT_SHOW_STATUS_NUMBERS" = true ]]; then
+                git_behind_ahead+="$nr_ahead "
+
+            fi
         fi
         echo "$git_behind_ahead"
     fi
@@ -113,6 +124,9 @@ _trueline_git_remote_icon() {
     elif [[ "$remote" =~ "gitlab" ]]; then
         remote_icon="${TRUELINE_SYMBOLS[git_gitlab]} "
     fi
+    if [[ -n "${remote_icon// }" ]]; then
+        remote_icon=" $remote_icon "
+    fi
     echo "$remote_icon"
 }
 _trueline_git_segment() {
@@ -123,7 +137,7 @@ _trueline_git_segment() {
         local segment="$(_trueline_separator)"
 
         local branch_icon="$(_trueline_git_remote_icon)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $branch_icon $branch ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" 2 "$branch_icon$branch ")"
         local mod_files="$(_trueline_git_mod_files)"
         if [[ -n "$mod_files" ]]; then
             segment+="$(_trueline_content "$TRUELINE_GIT_MODIFIED_COLOR" "$bg_color" 2 "$mod_files")"
@@ -141,7 +155,10 @@ _trueline_working_dir_segment() {
     local fg_color="$1"
     local bg_color="$2"
     local segment="$(_trueline_separator)"
-    local wd_separator=${TRUELINE_SYMBOLS[working_dir_separator]}
+    local wd_separator="${TRUELINE_SYMBOLS[working_dir_separator]}"
+    if [[ "$TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR" = true ]]; then
+        wd_separator=" $wd_separator "
+    fi
 
     local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]}}"
     local arr=
@@ -150,14 +167,14 @@ _trueline_working_dir_segment() {
     if [[ "$path_size" -eq 1 ]]; then
         local path_="\[\033[1m\]${arr[0]:=/}"
     elif [[ "$path_size" -eq 2 ]]; then
-        local path_="${arr[0]:=/} $wd_separator \[\033[1m\]${arr[-1]}"
+        local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[-1]}"
     else
         if [[ "$path_size" -gt 3 ]]; then
             p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
         fi
         local curr=$(basename "$p")
         p=$(dirname "$p")
-        local path_="${p//\// $wd_separator } $wd_separator \[\033[1m\]$curr"
+        local path_="${p//\//$wd_separator}$wd_separator\[\033[1m\]$curr"
         if [[ "${p:0:1}" = '/' ]]; then
             path_="/$path_"
         fi
@@ -326,6 +343,7 @@ if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     )
 fi
 
+# Vimode
 if [[ -z "$TRUELINE_SHOW_VIMODE" ]]; then
     TRUELINE_SHOW_VIMODE=false
 fi
@@ -342,6 +360,10 @@ if [[ -z "$TRUELINE_VIMODE_CMD_CURSOR" ]]; then
     TRUELINE_VIMODE_CMD_CURSOR='block'
 fi
 
+# Git
+if [[ -z "$TRUELINE_GIT_SHOW_STATUS_NUMBERS" ]]; then
+    TRUELINE_GIT_SHOW_STATUS_NUMBERS=true
+fi
 if [[ -z "$TRUELINE_GIT_MODIFIED_COLOR" ]]; then
     TRUELINE_GIT_MODIFIED_COLOR='red'
 fi
@@ -349,8 +371,13 @@ if [[ -z "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" ]]; then
     TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'
 fi
 
+# User
 if [[ -z "$TRUELINE_USER_ROOT_COLORS" ]]; then
     TRUELINE_USER_ROOT_COLORS=('black' 'red')
+fi
+if [[ -z "$TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR" ]]; then
+    TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=true
+
 fi
 
 # Actually set the prompt:
