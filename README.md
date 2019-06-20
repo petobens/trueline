@@ -44,34 +44,37 @@ start with a simple configuration example:
 
 ```bash
 declare -A TRUELINE_COLORS=(
+    [light_blue]='75;161;207'
+    [grey]='99;99;100'
     [black]='36;39;46'
     [default]='36;39;46'
-    [white]='208;208;208'
-    [green]='152;195;121'
+    [pink]='199;88;157'
 )
 
 declare -a TRUELINE_SEGMENTS=(
-    'user,black,white'
-    'working_dir,white,black'
-    'time,black,green'
+    'working_dir,light_blue,black'
+    'git,grey,black'
+    'newline,pink,black'
 )
 
 declare -A TRUELINE_SYMBOLS=(
+    [git_modified]='*'
     [segment_separator]=''
     [working_dir_folder]='...'
-    [working_dir_separator]='|'
+    [working_dir_separator]='/'
     [working_dir_home]='~'
 )
 
-TRUELINE_SHOW_VIMODE=false
+TRUELINE_GIT_SHOW_STATUS_NUMBERS=false
+TRUELINE_GIT_MODIFIED_COLOR='grey'
+TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=false
 
-_trueline_time_segment() {
-    local prompt_time="\t"
-    if [[ -n "$prompt_time" ]]; then
+_trueline_newline_segment() {
+    local newline_content="\n❯"
+    if [[ -n "$newline_content" ]]; then
         local fg_color="$1"
         local bg_color="$2"
-        local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $prompt_time ")"
+        local segment="$(_trueline_content "$fg_color" "$bg_color" 1 "$newline_content")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -80,9 +83,10 @@ _trueline_time_segment() {
 source ~/trueline/trueline.sh
 ```
 
-which generates the following prompt:
+which generates the following prompt (that essentially replicates the minimal ZSH
+[Pure](https://github.com/sindresorhus/pure) prompt):
 
-![](https://user-images.githubusercontent.com/2583971/59627345-5ef50480-9114-11e9-8a6b-4b2c3e1d5d4f.png)
+![](https://user-images.githubusercontent.com/2583971/59888250-2e73cb80-939d-11e9-8e0b-cd0bbdbd3572.png)
 
 You can see in the config above that there are basically 5 different/relevant settings:
 colors, segments, symbols, options and extensions. Let's break each of these down.
