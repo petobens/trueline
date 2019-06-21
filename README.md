@@ -67,7 +67,7 @@ declare -A TRUELINE_SYMBOLS=(
 
 TRUELINE_GIT_SHOW_STATUS_NUMBERS=false
 TRUELINE_GIT_MODIFIED_COLOR='grey'
-TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=false
+TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=false
 
 _trueline_newline_segment() {
     local newline_content="\n❯"
@@ -209,7 +209,8 @@ these, along with their default values, are:
     - user:
         - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
         background colors.
-        - `TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
+    - working_dir:
+        - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
         determines whether to add (or not) a space before and after the path separator.
 
 ### Extensions

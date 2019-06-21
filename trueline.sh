@@ -156,7 +156,7 @@ _trueline_working_dir_segment() {
     local bg_color="$2"
     local segment="$(_trueline_separator)"
     local wd_separator="${TRUELINE_SYMBOLS[working_dir_separator]}"
-    if [[ "$TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR" = true ]]; then
+    if [[ "$TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR" = true ]]; then
         wd_separator=" $wd_separator "
     fi
 
@@ -375,8 +375,10 @@ fi
 if [[ -z "$TRUELINE_USER_ROOT_COLORS" ]]; then
     TRUELINE_USER_ROOT_COLORS=('black' 'red')
 fi
-if [[ -z "$TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR" ]]; then
-    TRUELINE_USER_SPACE_BETWEEN_PATH_SEPARATOR=true
+
+# Working dir
+if [[ -z "$TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR" ]]; then
+    TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true
 
 fi
 
