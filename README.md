@@ -9,7 +9,7 @@ adds the ability to use RGB color codes, expands icon/glyph usage across prompt 
 (inspired by [Powerlevel9k](https://github.com/bhilburn/powerlevel9k)) and, among other
 goodies, shows the current input mode (when in vi-mode).
 
-![](https://user-images.githubusercontent.com/2583971/59619548-25ff6480-9101-11e9-8c77-5733f094f39e.png)
+![](https://user-images.githubusercontent.com/2583971/59968771-a7962e80-9515-11e9-9feb-d993ef0f4855.png)
 
 ## Installation
 
@@ -91,7 +91,7 @@ source ~/trueline/trueline.sh
 which generates the following prompt (that essentially replicates the minimal ZSH
 [Pure](https://github.com/sindresorhus/pure) prompt):
 
-![](https://user-images.githubusercontent.com/2583971/59967936-18cee500-9508-11e9-931a-22d7a01aad66.png)
+![](https://user-images.githubusercontent.com/2583971/59968784-c8f71a80-9515-11e9-9e3d-53ac7f67e475.png)
 
 You can see in the config above that there are basically 5 different/relevant settings:
 colors, segments, symbols, options and extensions. Let's break each of these down.
