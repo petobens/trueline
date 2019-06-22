@@ -135,19 +135,20 @@ where the segment foreground and background color names are keys of the `TRUELIN
 array and the order of the elements in the array define the order in which each segment
 is rendered in the prompt.
 
-By default Trueline offers the following segments:
+Trueline offers the following segments (status indicates whether they are enabled/rendered
+by default):
 
-| Segment Name | Description |
-|--------------|-------------|
-| exit_status  | return code of last command |
-| git          | git branch/remote and repository status |
-| newline      | splits prompt segments across multiple lines |
-| read_only    | indicator of read only directory |
-| user         | username and host (conditional on ssh status) |
-| venv         | Python virtual environment |
-| working_dir  | current working directory |
+| Segment Name | Status   | Description |
+|--------------|----------|-------------|
+| exit_status  | enabled  | return code of last command |
+| git          | enabled  | git branch/remote and repository status |
+| newline      | disabled | splits prompt segments across multiple lines |
+| read_only    | enabled  | indicator of read only directory |
+| user         | enabled  | username and host (conditional on ssh status) |
+| venv         | enabled  | Python virtual environment |
+| working_dir  | enabled  | current working directory |
 
-but more segments can be easily added (see [Extensions](#Extensions)).
+More segments can be easily added (see [Extensions](#Extensions)).
 
 ### Symbols
 
