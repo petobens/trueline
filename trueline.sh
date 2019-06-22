@@ -417,6 +417,9 @@ if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH" ]]; then
     TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1
 fi
 
-# Actually set the prompt:
+# Actually set the prompt (keeping a backup of the previous one)
+if [ -z "$_PROMPT_COMMAND_OLD" ]; then
+    _PROMPT_COMMAND_OLD="$PROMPT_COMMAND"
+fi
 unset PROMPT_COMMAND
 PROMPT_COMMAND=_trueline_prompt_command
