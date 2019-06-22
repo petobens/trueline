@@ -36,6 +36,9 @@ _trueline_is_root() {
         echo 'is_root'
     fi
 }
+_trueline_ip_address() {
+    \ip route get 1 | tr -s ' ' | cut -d' ' -f7
+}
 _trueline_has_ssh() {
     if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
         echo 'has_ssh'
@@ -55,7 +58,12 @@ _trueline_user_segment() {
     fi
     local has_ssh="$(_trueline_has_ssh)"
     if [[ -n "$has_ssh" ]]; then
-        user="${TRUELINE_SYMBOLS[ssh]} $user@$HOSTNAME"
+        user="${TRUELINE_SYMBOLS[ssh]} $user@"
+        if [ "$TRUELINE_USER_SHOW_IP_SSH" = true ]; then
+            user+="$(_trueline_ip_address)"
+        else
+            user+="$HOSTNAME"
+        fi
     fi
     local segment="$(_trueline_separator)"
     segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $user ")"
@@ -392,6 +400,9 @@ fi
 # User
 if [[ -z "$TRUELINE_USER_ROOT_COLORS" ]]; then
     TRUELINE_USER_ROOT_COLORS=('black' 'red')
+fi
+if [[ -z "$TRUELINE_USER_SHOW_IP_SSH" ]]; then
+    TRUELINE_USER_SHOW_IP_SSH=false
 fi
 
 # Working dir

@@ -216,6 +216,8 @@ these, along with their default values, are:
     - user:
         - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
         background colors.
+        - `TRUELINE_USER_SHOW_IP_SSH=false`: boolean variable that determines whether to
+        show the ip address or hostname in a ssh connection.
     - working_dir:
         - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
         determines whether to add (or not) a space before and after the path separator.
