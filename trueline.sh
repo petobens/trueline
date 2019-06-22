@@ -170,7 +170,11 @@ _trueline_working_dir_segment() {
         local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[-1]}"
     else
         if [[ "$path_size" -gt 3 ]]; then
-            p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
+            if [[ "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" = true ]]; then
+                p=$(echo "$p" | sed -r "s:([^/]{,$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH})[^/]*/:\1/:g")
+            else
+                p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
+            fi
         fi
         local curr=$(basename "$p")
         p=$(dirname "$p")
@@ -380,6 +384,12 @@ fi
 if [[ -z "$TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR" ]]; then
     TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true
 
+fi
+if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" ]]; then
+    TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS=false
+fi
+if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH" ]]; then
+    TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1
 fi
 
 # Actually set the prompt:

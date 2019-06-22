@@ -212,6 +212,11 @@ these, along with their default values, are:
     - working_dir:
         - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
         determines whether to add (or not) a space before and after the path separator.
+        - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS=false`: boolean variable that when
+        set to true shows the full working directory (instead of trimming it). Each parent
+        directory is shortened to `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH`.
+        - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1`: length of each parent
+         directory when `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS` is enabled.
 
 ### Extensions
 
