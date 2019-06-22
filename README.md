@@ -49,11 +49,13 @@ declare -A TRUELINE_COLORS=(
     [black]='36;39;46'
     [default]='36;39;46'
     [pink]='199;88;157'
+    [white]='208;208;208'
 )
 
 declare -a TRUELINE_SEGMENTS=(
     'working_dir,light_blue,black'
     'git,grey,black'
+    'time,white,black'
     'newline,pink,black'
 )
 
@@ -63,18 +65,21 @@ declare -A TRUELINE_SYMBOLS=(
     [working_dir_folder]='...'
     [working_dir_separator]='/'
     [working_dir_home]='~'
+    [newline]='❯'
+    [clock]='🕒'
 )
 
 TRUELINE_GIT_SHOW_STATUS_NUMBERS=false
 TRUELINE_GIT_MODIFIED_COLOR='grey'
 TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=false
 
-_trueline_newline_segment() {
-    local newline_content="\n❯"
-    if [[ -n "$newline_content" ]]; then
+_trueline_time_segment() {
+    local prompt_time="${TRUELINE_SYMBOLS[clock]} \t"
+    if [[ -n "$prompt_time" ]]; then
         local fg_color="$1"
         local bg_color="$2"
-        local segment="$(_trueline_content "$fg_color" "$bg_color" 1 "$newline_content")"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $prompt_time ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -86,7 +91,7 @@ source ~/trueline/trueline.sh
 which generates the following prompt (that essentially replicates the minimal ZSH
 [Pure](https://github.com/sindresorhus/pure) prompt):
 
-![](https://user-images.githubusercontent.com/2583971/59888250-2e73cb80-939d-11e9-8e0b-cd0bbdbd3572.png)
+![](https://user-images.githubusercontent.com/2583971/59967936-18cee500-9508-11e9-931a-22d7a01aad66.png)
 
 You can see in the config above that there are basically 5 different/relevant settings:
 colors, segments, symbols, options and extensions. Let's break each of these down.
@@ -136,6 +141,7 @@ By default Trueline offers the following segments:
 |--------------|-------------|
 | exit_status  | return code of last command |
 | git          | git branch/remote and repository status |
+| newline      | splits prompt segments across multiple lines |
 | read_only    | indicator of read only directory |
 | user         | username and host (conditional on ssh status) |
 | venv         | Python virtual environment |
@@ -167,6 +173,7 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | git_github | U+f408|
 | git_gitlab | U+f296|
 | git_modified | ✚ |
+| newline | U+f155 |
 | ps2 | ... |
 | read_only | U+f023 |
 | segment_separator | U+e0b0 |

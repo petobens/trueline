@@ -20,6 +20,9 @@ _trueline_separator() {
     if [[ -n "$_last_color" ]]; then
         # Only add a separator if it's not the first section (and hence last
         # color is set/defined)
+        if [[ -n "$1" ]]; then
+            local bg_color="$1"
+        fi
         _trueline_content "$_last_color" "$bg_color" 1 "${TRUELINE_SYMBOLS[segment_separator]}"
     fi
 }
@@ -216,6 +219,16 @@ _trueline_exit_status_segment() {
     fi
 }
 
+_trueline_newline_segment() {
+    local fg_color="$1"
+    local bg_color="$2"
+    local segment="$(_trueline_separator default)"
+    segment+="\n"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" 1 "${TRUELINE_SYMBOLS[newline]}")"
+    PS1+="$segment"
+    _last_color=$bg_color
+}
+
 _trueline_vimode_cursor_shape() {
     shape="$1"
     case "$shape" in
@@ -272,7 +285,7 @@ _trueline_prompt_command() {
         local segment_name=$(echo "$segment_def" | cut -d ',' -f1)
         local segment_fg=$(echo "$segment_def" | cut -d ',' -f2)
         local segment_bg=$(echo "$segment_def" | cut -d ',' -f3)
-        if [[ -z "$_first_color_fg" ]]; then
+        if [[ -z "$_first_color_fg" ]] || [[ "$segment_name" = 'newline' ]]; then
             _first_color_fg="$segment_fg"
             _first_color_bg="$segment_bg"
         fi
@@ -321,7 +334,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'working_dir,mono,cursor_grey'
         'read_only,black,orange'
         'exit_status,black,red'
-
+        # 'newline,black,orange'
     )
 fi
 
@@ -334,6 +347,7 @@ if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
         [git_github]=''
         [git_gitlab]=''
         [git_modified]='✚'
+        [newline]='  '
         [ps2]='...'
         [read_only]=''
         [segment_separator]=''
