@@ -79,7 +79,7 @@ _trueline_time_segment() {
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $prompt_time ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" normal " $prompt_time ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -239,12 +239,15 @@ _trueline_new_segment_name_segment() {
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $some_content ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " $some_content ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
 }
 ```
 
-and then simply adding the `new_segment_name` to your `TRUELINE_SEGMENTS` array (PRs with
-complicated segments are also welcome!)
+and then simply including the `new_segment_name` in your `TRUELINE_SEGMENTS` array. Note
+that the third argument in the `_trueline_content` function above is the segment font
+style (it can take one of the following values: normal, bold, italic or underlined).
+
+PRs with complicated segments are welcome!

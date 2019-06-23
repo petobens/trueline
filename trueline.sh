@@ -2,10 +2,25 @@
 #---------+
 # Helpers |
 #---------+
+_trueline_font_style() {
+    style="$1"
+    case "$style" in
+        bold)
+            style=1 ;;
+        italic)
+            style=3 ;;
+        underlined)
+            style=4 ;;
+        **)
+            style=2 ;;
+    esac
+    echo "$style"
+}
+
 _trueline_content() {
     fg_c="${TRUELINE_COLORS[$1]}"
     bg_c="${TRUELINE_COLORS[$2]}"
-    style="$3m" # 1 for bold; 2 for normal
+    style="$(_trueline_font_style "$3")m"
     content="$4"
     esc_seq_start="\["
     esc_seq_end="\]"
@@ -23,7 +38,7 @@ _trueline_separator() {
         if [[ -n "$1" ]]; then
             local bg_color="$1"
         fi
-        _trueline_content "$_last_color" "$bg_color" 1 "${TRUELINE_SYMBOLS[segment_separator]}"
+        _trueline_content "$_last_color" "$bg_color" bold "${TRUELINE_SYMBOLS[segment_separator]}"
     fi
 }
 
@@ -66,7 +81,7 @@ _trueline_user_segment() {
         fi
     fi
     local segment="$(_trueline_separator)"
-    segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $user ")"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" bold " $user ")"
     PS1+="$segment"
     _last_color=$bg_color
 }
@@ -80,7 +95,7 @@ _trueline_venv_segment() {
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " ${TRUELINE_SYMBOLS[venv]} $venv ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " ${TRUELINE_SYMBOLS[venv]} $venv ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -148,14 +163,14 @@ _trueline_git_segment() {
         local segment="$(_trueline_separator)"
 
         local branch_icon="$(_trueline_git_remote_icon)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 2 "$branch_icon$branch ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" normal "$branch_icon$branch ")"
         local mod_files="$(_trueline_git_mod_files)"
         if [[ -n "$mod_files" ]]; then
-            segment+="$(_trueline_content "$TRUELINE_GIT_MODIFIED_COLOR" "$bg_color" 2 "$mod_files")"
+            segment+="$(_trueline_content "$TRUELINE_GIT_MODIFIED_COLOR" "$bg_color" normal "$mod_files")"
         fi
         local behind_ahead="$(_trueline_git_behind_ahead "$branch")"
         if [[ -n "$behind_ahead" ]]; then
-            segment+="$(_trueline_content "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" "$bg_color" 2 "$behind_ahead")"
+            segment+="$(_trueline_content "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" "$bg_color" normal "$behind_ahead")"
         fi
         PS1+="$segment"
         _last_color=$bg_color
@@ -194,7 +209,7 @@ _trueline_working_dir_segment() {
             path_="/$path_"
         fi
     fi
-    segment+="$(_trueline_content "$fg_color" "$bg_color" 2 " $path_ ")"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" normal " $path_ ")"
     PS1+="$segment"
     _last_color=$bg_color
 }
@@ -210,7 +225,7 @@ _trueline_read_only_segment() {
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " ${TRUELINE_SYMBOLS[read_only]} ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " ${TRUELINE_SYMBOLS[read_only]} ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -221,7 +236,7 @@ _trueline_exit_status_segment() {
         local fg_color="$1"
         local bg_color="$2"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" 1 " $_exit_status ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " $_exit_status ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -232,7 +247,7 @@ _trueline_newline_segment() {
     local bg_color="$2"
     local segment="$(_trueline_separator default)"
     segment+="\n"
-    segment+="$(_trueline_content "$fg_color" "$bg_color" 1 "${TRUELINE_SYMBOLS[newline]}")"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" bold "${TRUELINE_SYMBOLS[newline]}")"
     PS1+="$segment"
     _last_color=$bg_color
 }
@@ -256,15 +271,15 @@ _trueline_vimode_segment() {
         bind "set show-mode-in-prompt on"
         local vimode_ins_fg=${TRUELINE_VIMODE_INS_COLORS[0]}
         local vimode_ins_bg=${TRUELINE_VIMODE_INS_COLORS[1]}
-        local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" 1 " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
-        segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
+        local segment="$(_trueline_content "$vimode_ins_fg" "$vimode_ins_bg" bold " ${TRUELINE_SYMBOLS[vimode_ins]} " "vi")"
+        segment+="$(_trueline_content "$vimode_ins_bg" "$_first_color_bg" bold "$seg_separator" "vi")"
         segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_INS_CURSOR")"
         bind "set vi-ins-mode-string $segment"
 
         local vimode_cmd_fg=${TRUELINE_VIMODE_CMD_COLORS[0]}
         local vimode_cmd_bg=${TRUELINE_VIMODE_CMD_COLORS[1]}
-        segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" 1 " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
-        segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" 1 "$seg_separator" "vi")"
+        segment="$(_trueline_content "$vimode_cmd_fg" "$vimode_cmd_bg" bold " ${TRUELINE_SYMBOLS[vimode_cmd]} " "vi")"
+        segment+="$(_trueline_content "$vimode_cmd_bg" "$_first_color_bg" bold "$seg_separator" "vi")"
         segment+="$(_trueline_vimode_cursor_shape "$TRUELINE_VIMODE_CMD_CURSOR")"
         bind "set vi-cmd-mode-string $segment"
 
@@ -280,8 +295,8 @@ _trueline_vimode_segment() {
 # PS1 and PS2 |
 #-------------+
 _trueline_continuation_prompt() {
-    PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" 1 " ${TRUELINE_SYMBOLS[ps2]} ")
-    PS2+=$(_trueline_content "$_first_color_bg" default 1 "${TRUELINE_SYMBOLS[segment_separator]} ")
+    PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" bold " ${TRUELINE_SYMBOLS[ps2]} ")
+    PS2+=$(_trueline_content "$_first_color_bg" default bold "${TRUELINE_SYMBOLS[segment_separator]} ")
 }
 
 _trueline_prompt_command() {
@@ -303,7 +318,7 @@ _trueline_prompt_command() {
     done
 
     _trueline_vimode_segment
-    PS1+=$(_trueline_content "$_last_color" default 1 "${TRUELINE_SYMBOLS[segment_separator]}")
+    PS1+=$(_trueline_content "$_last_color" default bold "${TRUELINE_SYMBOLS[segment_separator]}")
     PS1+=" "  # non-breakable space
     _trueline_continuation_prompt
 
