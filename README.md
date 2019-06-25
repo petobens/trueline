@@ -148,7 +148,20 @@ by default):
 | venv         | enabled  | Python virtual environment |
 | working_dir  | enabled  | current working directory |
 
-More segments can be easily added (see [Extensions](#Extensions)).
+but more segments can be easily added (see [Extensions](#Extensions)).
+
+To enable the newline segment one could use the following config:
+
+```bash
+declare -a TRUELINE_SEGMENTS=(
+    'working_dir,mono,cursor_grey'
+    'git,grey,special_grey'
+    'newline,black,orange'
+)
+```
+
+which results in:
+![](https://user-images.githubusercontent.com/2583971/60122514-bb32d680-975b-11e9-8a57-811ed430a933.png)
 
 ### Symbols
 
@@ -175,6 +188,7 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | git_gitlab | U+f296|
 | git_modified | ✚ |
 | newline | U+f155 |
+| newline_root | U+f292 |
 | ps2 | ... |
 | read_only | U+f023 |
 | segment_separator | U+e0b0 |

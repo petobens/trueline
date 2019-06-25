@@ -245,9 +245,14 @@ _trueline_exit_status_segment() {
 _trueline_newline_segment() {
     local fg_color="$1"
     local bg_color="$2"
+    local is_root="$(_trueline_is_root)"
+    local newline_symbol="${TRUELINE_SYMBOLS[newline]}"
+    if [[ -n "$is_root" ]]; then
+        local newline_symbol="${TRUELINE_SYMBOLS[newline_root]}"
+    fi
     local segment="$(_trueline_separator default)"
     segment+="\n"
-    segment+="$(_trueline_content "$fg_color" "$bg_color" bold "${TRUELINE_SYMBOLS[newline]}")"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" bold "$newline_symbol")"
     PS1+="$segment"
     _last_color=$bg_color
 }
@@ -371,6 +376,7 @@ if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
         [git_gitlab]=''
         [git_modified]='✚'
         [newline]='  '
+        [newline_root]='  '
         [ps2]='...'
         [read_only]=''
         [segment_separator]=''
