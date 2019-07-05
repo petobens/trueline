@@ -47,7 +47,6 @@ declare -A TRUELINE_COLORS=(
     [light_blue]='75;161;207'
     [grey]='99;99;100'
     [black]='36;39;46'
-    [default]='36;39;46'
     [pink]='199;88;157'
     [white]='208;208;208'
 )
@@ -107,18 +106,8 @@ declare -A TRUELINE_COLORS=(
 )
 ```
 
-_Note:_ you can define as many colors as you want but you _must always_ include in your
-color palette definition a `default` color name. This `default` color is used by the
-prompt closing separator (as well as by the continuation prompt) and it should match your
-terminal background. This means that if your terminal background color RGB value is
-`130;137;151` you should then have an entry like so:
-
-```bash
-declare -A TRUELINE_COLORS=(
-    [default]='130;137;151'
-    # other color definitions...
-)
-```
+_Note:_ there is a reserved color name, `default_bg`, which precisely defaults to the
+terminal background color.
 
 ### Segments
 

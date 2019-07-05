@@ -19,7 +19,7 @@ _trueline_font_style() {
 
 _trueline_content() {
     fg_c="${TRUELINE_COLORS[$1]}"
-    bg_c="${TRUELINE_COLORS[$2]}"
+    bg_c="$2"
     style="$(_trueline_font_style "$3")m"
     content="$4"
     esc_seq_start="\["
@@ -28,7 +28,13 @@ _trueline_content() {
         esc_seq_start="\1"
         esc_seq_end="\2"
     fi
-    echo "$esc_seq_start\033[38;2;$fg_c;48;2;$bg_c;$style$esc_seq_end$content$esc_seq_start\033[0m$esc_seq_end"
+    output="$esc_seq_start\033[38;2;$fg_c;"
+    if [[ "$bg_c" != 'default_bg' ]]; then
+        bg_c="${TRUELINE_COLORS[$bg_c]}"
+        output+="48;2;$bg_c;"
+    fi
+    output+="$style$esc_seq_end$content$esc_seq_start\033[0m$esc_seq_end"
+    echo "$output"
 }
 
 _trueline_separator() {
@@ -250,7 +256,7 @@ _trueline_newline_segment() {
     if [[ -n "$is_root" ]]; then
         local newline_symbol="${TRUELINE_SYMBOLS[newline_root]}"
     fi
-    local segment="$(_trueline_separator default)"
+    local segment="$(_trueline_separator default_bg)"
     segment+="\n"
     segment+="$(_trueline_content "$fg_color" "$bg_color" bold "$newline_symbol")"
     PS1+="$segment"
@@ -301,7 +307,7 @@ _trueline_vimode_segment() {
 #-------------+
 _trueline_continuation_prompt() {
     PS2=$(_trueline_content "$_first_color_fg" "$_first_color_bg" bold " ${TRUELINE_SYMBOLS[ps2]} ")
-    PS2+=$(_trueline_content "$_first_color_bg" default bold "${TRUELINE_SYMBOLS[segment_separator]} ")
+    PS2+=$(_trueline_content "$_first_color_bg" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]} ")
 }
 
 _trueline_prompt_command() {
@@ -323,7 +329,7 @@ _trueline_prompt_command() {
     done
 
     _trueline_vimode_segment
-    PS1+=$(_trueline_content "$_last_color" default bold "${TRUELINE_SYMBOLS[segment_separator]}")
+    PS1+=$(_trueline_content "$_last_color" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]}")
     PS1+=" "  # non-breakable space
     _trueline_continuation_prompt
 
@@ -341,7 +347,6 @@ if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_COLORS=(
         [black]='36;39;46' #24272e
         [cursor_grey]='40;44;52' #282c34
-        [default]='36;39;46' #24272e
         [green]='152;195;121' #98c379
         [grey]='171;178;191' #abb2bf
         [light_blue]='97;175;239' #61afef
