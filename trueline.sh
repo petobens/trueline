@@ -277,6 +277,10 @@ _trueline_vimode_cursor_shape() {
 }
 _trueline_vimode_segment() {
     if [[ "$TRUELINE_SHOW_VIMODE" = true ]]; then
+        if [[ ! -o vi ]]; then
+            set -o vi
+        fi
+
         local seg_separator=${TRUELINE_SYMBOLS[segment_separator]}
 
         bind "set show-mode-in-prompt on"
@@ -443,7 +447,11 @@ if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH" ]]; then
     TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1
 fi
 
-# Actually set the prompt (keeping a backup of the previous one)
+
+#----------------+
+# PROMPT_COMMAND |
+#----------------+
+# Backup old prompt command first
 if [ -z "$_PROMPT_COMMAND_OLD" ]; then
     _PROMPT_COMMAND_OLD="$PROMPT_COMMAND"
 fi

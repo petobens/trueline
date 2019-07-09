@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD045 -->
+
 # Trueline: Bash Powerline Style Prompt with True Color Support
 
 Trueline is a fast and extensible [Powerline](https://github.com/powerline/powerline)
@@ -6,8 +8,8 @@ style bash prompt with true color (24-bit) and fancy glyph support.
 The pure Bash code implementation and overall features are modelled after the excellent
 [Pureline](https://github.com/chris-marsh/pureline) command prompt. However Trueline also
 adds the ability to use RGB color codes, expands icon/glyph usage across prompt segments
-(inspired by [Powerlevel9k](https://github.com/bhilburn/powerlevel9k)) and, among other
-goodies, shows the current input mode (when in vi-mode).
+(inspired by [Powerlevel9k](https://github.com/bhilburn/powerlevel9k)), simplifies
+configuration and, among other goodies, shows the current input mode (when in vi-mode).
 
 ![](https://user-images.githubusercontent.com/2583971/59968771-a7962e80-9515-11e9-9feb-d993ef0f4855.png)
 
@@ -127,15 +129,15 @@ is rendered in the prompt.
 Trueline offers the following segments (status indicates whether they are enabled/rendered
 by default):
 
-| Segment Name | Status   | Description |
-|--------------|----------|-------------|
-| exit_status  | enabled  | return code of last command |
-| git          | enabled  | git branch/remote and repository status |
-| newline      | disabled | splits prompt segments across multiple lines |
-| read_only    | enabled  | indicator of read only directory |
-| user         | enabled  | username and host (conditional on ssh status) |
-| venv         | enabled  | Python virtual environment |
-| working_dir  | enabled  | current working directory |
+| Segment Name   | Status     | Description                                   |
+| -------------- | ---------- | -------------                                 |
+| exit_status    | enabled    | return code of last command                   |
+| git            | enabled    | git branch/remote and repository status       |
+| newline        | disabled   | splits prompt segments across multiple lines  |
+| read_only      | enabled    | indicator of read only directory              |
+| user           | enabled    | username and host (conditional on ssh status) |
+| venv           | enabled    | Python virtual environment                    |
+| working_dir    | enabled    | current working directory                     |
 
 but more segments can be easily added (see [Extensions](#Extensions)).
 
@@ -167,38 +169,68 @@ declare -A TRUELINE_SYMBOLS=(
 The following table shows the current predefined symbol names along with their default
 values (i.e either the actual glyph or the corresponding nerd-font unicode code):
 
-| Symbol Name | Glyph or Unicode Value |
-|-------------|-------------|
-| git_ahead | U+f55c |
-| git_behind| U+f544 |
-| git_bitbucket | U+f171 |
-| git_branch | U+e0a0 |
-| git_github | U+f408|
-| git_gitlab | U+f296|
-| git_modified | ✚ |
-| newline | U+f155 |
-| newline_root | U+f292 |
-| ps2 | ... |
-| read_only | U+f023 |
-| segment_separator | U+e0b0 |
-| ssh | U+f817 |
-| venv | U+e73c|
-| vimode_cmd | N |
-| vimode_ins | I |
-| working_dir_folder | U+e5fe |
-| working_dir_home | U+f015 |
-| working_dir_separator | U+e0b1 |
+| Symbol Name           | Glyph or Unicode Value |
+| -------------         | -------------          |
+| git_ahead             | U+f55c                 |
+| git_behind            | U+f544                 |
+| git_bitbucket         | U+f171                 |
+| git_branch            | U+e0a0                 |
+| git_github            | U+f408                 |
+| git_gitlab            | U+f296                 |
+| git_modified          | ✚                      |
+| newline               | U+f155                 |
+| newline_root          | U+f292                 |
+| ps2                   | ...                    |
+| read_only             | U+f023                 |
+| segment_separator     | U+e0b0                 |
+| ssh                   | U+f817                 |
+| venv                  | U+e73c                 |
+| vimode_cmd            | N                      |
+| vimode_ins            | I                      |
+| working_dir_folder    | U+e5fe                 |
+| working_dir_home      | U+f015                 |
+| working_dir_separator | U+e0b1                 |
 
 ### Options
 
 Most Trueline settings are controlled with the 3 structures defined above. However
 Trueline also defines a series of variables that control some extra options. In particular
-these, along with their default values, are:
+we can distinguish between intra-segment and external options. These, along with their
+default values, are defined as follows:
 
-- `TRUELINE_SHOW_VIMODE=false`: boolean variable that determines whether or not to show the
-    current vi mode (vi-mode must be enabled separately in your `.bashrc` via `set -o
-    vi`). If this variable is set to `true` then a new segment is shown first (i.e before
-    any other segment defined in `TRUELINE_SEGMENTS`) and it's appearance can be
+#### Intra-segment
+
+The next segments have (sub)settings of their own:
+
+- git:
+    - `TRUELINE_GIT_SHOW_STATUS_NUMBERS=true`: boolean variable that determines
+    whether to show (or not) the actual number of modified files and commits
+    behind/ahead next to the corresponding modified-behind/ahead status symbol.
+    - `TRUELINE_GIT_MODIFIED_COLOR='red'`: foreground color for symbol and number of
+    modified files.
+    - `TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'`: foreground color for symbol and
+    number of commits behind/ahead.
+- user:
+    - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
+    background colors.
+    - `TRUELINE_USER_SHOW_IP_SSH=false`: boolean variable that determines whether to
+    show the ip address or hostname in a ssh connection.
+- working_dir:
+    - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
+    determines whether to add (or not) a space before and after the path separator.
+    - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS=false`: boolean variable that when
+    set to true shows the full working directory (instead of trimming it). Each parent
+    directory is shortened to `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH`.
+    - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1`: length of each parent
+        directory when `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS` is enabled.
+
+#### External
+
+- `TRUELINE_SHOW_VIMODE=false`: boolean variable that determines whether or not to show
+    the current vi mode (if this is set to `true` and vi-mode is not already enabled then
+    Trueline will enabled it; vi-mode must be otherwise enabled separately in your
+    `.bashrc` via `set -o vi`). When set to `true` a new segment is shown first (i.e
+    before any other segment defined in `TRUELINE_SEGMENTS`) and it's appearance can be
     controlled by means of the following variables:
     - `TRUELINE_VIMODE_INS_COLORS=('black' 'light_blue')`: insert mode segment foreground
     and background colors.
@@ -208,28 +240,6 @@ these, along with their default values, are:
     values are `vert`, `block` and `under`).
     - `TRUELINE_VIMODE_CMD_CURSOR='block'`: command mode cursor shape (possible
     values are `vert`, `block` and `under`).
-- In-segment options: the following segments have (sub)settings of their own
-    - git:
-        - `TRUELINE_GIT_SHOW_STATUS_NUMBERS=true`: boolean variable that determines
-        whether to show (or not) the actual number of modified files and commits
-        behind/ahead next to the corresponding modified-behind/ahead status symbol.
-        - `TRUELINE_GIT_MODIFIED_COLOR='red'`: foreground color for symbol and number of
-        modified files.
-        - `TRUELINE_GIT_BEHIND_AHEAD_COLOR='purple'`: foreground color for symbol and
-        number of commits behind/ahead.
-    - user:
-        - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
-        background colors.
-        - `TRUELINE_USER_SHOW_IP_SSH=false`: boolean variable that determines whether to
-        show the ip address or hostname in a ssh connection.
-    - working_dir:
-        - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
-        determines whether to add (or not) a space before and after the path separator.
-        - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS=false`: boolean variable that when
-        set to true shows the full working directory (instead of trimming it). Each parent
-        directory is shortened to `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH`.
-        - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1`: length of each parent
-         directory when `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS` is enabled.
 
 ### Extensions
 
