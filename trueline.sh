@@ -111,7 +111,7 @@ _trueline_has_git_branch() {
     printf "%s" "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 }
 _trueline_git_mod_files() {
-    nr_mod_files="$(git diff --name-only --diff-filter=M 2> /dev/null | wc -l )"
+    nr_mod_files="$(git diff --name-only --diff-filter=M 2> /dev/null | wc -l | sed 's/^ *//')"
     mod_files=''
     if [[ ! "$nr_mod_files" -eq 0 ]]; then
         mod_files="${TRUELINE_SYMBOLS[git_modified]} "
@@ -218,6 +218,18 @@ _trueline_working_dir_segment() {
     segment+="$(_trueline_content "$fg_color" "$bg_color" normal " $path_ ")"
     PS1+="$segment"
     _last_color=$bg_color
+}
+
+_trueline_bg_jobs_segment() {
+    local bg_jobs=$(jobs -p | wc -l | sed 's/^ *//')
+    if [[ ! "$bg_jobs" -eq 0 ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " ${TRUELINE_SYMBOLS[bg_jobs]} $bg_jobs ")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
 }
 
 _trueline_is_read_only() {
@@ -370,6 +382,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'git,grey,special_grey'
         'working_dir,mono,cursor_grey'
         'read_only,black,orange'
+        'bg_jobs,black,orange'
         'exit_status,black,red'
         # 'newline,black,orange'
     )
@@ -377,6 +390,7 @@ fi
 
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=(
+        [bg_jobs]=''
         [git_ahead]=''
         [git_behind]=''
         [git_bitbucket]=''

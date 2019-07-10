@@ -131,6 +131,7 @@ by default):
 
 | Segment Name   | Status     | Description                                   |
 | -------------- | ---------- | -------------                                 |
+| bg_jobs        | enabled    | number of background jobs                     |
 | exit_status    | enabled    | return code of last command                   |
 | git            | enabled    | git branch/remote and repository status       |
 | newline        | disabled   | splits prompt segments across multiple lines  |
@@ -169,27 +170,18 @@ declare -A TRUELINE_SYMBOLS=(
 The following table shows the current predefined symbol names along with their default
 values (i.e either the actual glyph or the corresponding nerd-font unicode code):
 
-| Symbol Name           | Glyph or Unicode Value |
-| -------------         | -------------          |
-| git_ahead             | U+f55c                 |
-| git_behind            | U+f544                 |
-| git_bitbucket         | U+f171                 |
-| git_branch            | U+e0a0                 |
-| git_github            | U+f408                 |
-| git_gitlab            | U+f296                 |
-| git_modified          | ✚                      |
-| newline               | U+f155                 |
-| newline_root          | U+f292                 |
-| ps2                   | ...                    |
-| read_only             | U+f023                 |
-| segment_separator     | U+e0b0                 |
-| ssh                   | U+f817                 |
-| venv                  | U+e73c                 |
-| vimode_cmd            | N                      |
-| vimode_ins            | I                      |
-| working_dir_folder    | U+e5fe                 |
-| working_dir_home      | U+f015                 |
-| working_dir_separator | U+e0b1                 |
+| Symbol Name   | Glyph         |   | Symbol Name           | Glyph         |
+| ------------- | ------------- | - | -------------         | ------------- |
+| bg_jobs       | U+f085        |   | ps2                   | ...           |
+| git_ahead     | U+f55c        |   | read_only             | U+f023        |
+| git_behind    | U+f544        |   | segment_separator     | U+e0b0        |
+| git_bitbucket | U+f171        |   | ssh                   | U+f817        |
+| git_branch    | U+e0a0        |   | venv                  | U+e73c        |
+| git_github    | U+f408        |   | vimode_cmd            | N             |
+| git_gitlab    | U+f296        |   | vimode_ins            | I             |
+| git_modified  | ✚             |   | working_dir_folder    | U+e5fe        |
+| newline       | U+f155        |   | working_dir_home      | U+f015        |
+| newline_root  | U+f292        |   | working_dir_separator | U+e0b1        |
 
 ### Options
 
