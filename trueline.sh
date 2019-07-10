@@ -359,21 +359,28 @@ _trueline_prompt_command() {
 #---------------+
 # Configuration |
 #---------------+
+declare -A TRUELINE_COLORS_DEFAULT=(
+    [black]='36;39;46' #24272e
+    [cursor_grey]='40;44;52' #282c34
+    [green]='152;195;121' #98c379
+    [grey]='171;178;191' #abb2bf
+    [light_blue]='97;175;239' #61afef
+    [mono]='130;137;151' #828997
+    [orange]='209;154;102' #d19a66
+    [purple]='198;120;221' #c678dd
+    [red]='224;108;117' #e06c75
+    [special_grey]='59;64;72' #3b4048
+    [white]='208;208;208' #d0d0d0
+)
 if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
-    declare -A TRUELINE_COLORS=(
-        [black]='36;39;46' #24272e
-        [cursor_grey]='40;44;52' #282c34
-        [green]='152;195;121' #98c379
-        [grey]='171;178;191' #abb2bf
-        [light_blue]='97;175;239' #61afef
-        [mono]='130;137;151' #828997
-        [orange]='209;154;102' #d19a66
-        [purple]='198;120;221' #c678dd
-        [red]='224;108;117' #e06c75
-        [special_grey]='59;64;72' #3b4048
-        [white]='208;208;208' #d0d0d0
-    )
+    declare -A TRUELINE_COLORS=()
 fi
+for i in "${!TRUELINE_COLORS_DEFAULT[@]}"; do
+    if [[ ! "${TRUELINE_COLORS["$i"]+exists}" ]]; then
+        TRUELINE_COLORS["$i"]="${TRUELINE_COLORS_DEFAULT["$i"]}"
+    fi
+done
+unset TRUELINE_COLORS_DEFAULT
 
 if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     declare -a TRUELINE_SEGMENTS=(
@@ -388,30 +395,37 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     )
 fi
 
+declare -A TRUELINE_SYMBOLS_DEFAULT=(
+    [bg_jobs]=''
+    [git_ahead]=''
+    [git_behind]=''
+    [git_bitbucket]=''
+    [git_branch]=''
+    [git_github]=''
+    [git_gitlab]=''
+    [git_modified]='✚'
+    [newline]='  '
+    [newline_root]='  '
+    [ps2]='...'
+    [read_only]=''
+    [segment_separator]=''
+    [ssh]=''
+    [venv]=''
+    [vimode_cmd]='N'
+    [vimode_ins]='I'
+    [working_dir_folder]=''
+    [working_dir_home]=''
+    [working_dir_separator]=''
+)
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
-    declare -A TRUELINE_SYMBOLS=(
-        [bg_jobs]=''
-        [git_ahead]=''
-        [git_behind]=''
-        [git_bitbucket]=''
-        [git_branch]=''
-        [git_github]=''
-        [git_gitlab]=''
-        [git_modified]='✚'
-        [newline]='  '
-        [newline_root]='  '
-        [ps2]='...'
-        [read_only]=''
-        [segment_separator]=''
-        [ssh]=''
-        [venv]=''
-        [vimode_cmd]='N'
-        [vimode_ins]='I'
-        [working_dir_folder]=''
-        [working_dir_home]=''
-        [working_dir_separator]=''
-    )
+    declare -A TRUELINE_SYMBOLS=()
 fi
+for i in "${!TRUELINE_SYMBOLS_DEFAULT[@]}"; do
+    if [[ ! "${TRUELINE_SYMBOLS["$i"]+exists}" ]]; then
+        TRUELINE_SYMBOLS["$i"]="${TRUELINE_SYMBOLS_DEFAULT["$i"]}"
+    fi
+done
+unset TRUELINE_SYMBOLS_DEFAULT
 
 # Vimode
 if [[ -z "$TRUELINE_SHOW_VIMODE" ]]; then

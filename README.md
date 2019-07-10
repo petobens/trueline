@@ -48,9 +48,7 @@ start with a simple configuration example:
 declare -A TRUELINE_COLORS=(
     [light_blue]='75;161;207'
     [grey]='99;99;100'
-    [black]='36;39;46'
     [pink]='199;88;157'
-    [white]='208;208;208'
 )
 
 declare -a TRUELINE_SEGMENTS=(
@@ -62,6 +60,7 @@ declare -a TRUELINE_SEGMENTS=(
 
 declare -A TRUELINE_SYMBOLS=(
     [git_modified]='*'
+    [git_github]=''
     [segment_separator]=''
     [working_dir_folder]='...'
     [working_dir_separator]='/'
@@ -108,8 +107,33 @@ declare -A TRUELINE_COLORS=(
 )
 ```
 
-_Note:_ there is a reserved color name, `default_bg`, which precisely defaults to the
-terminal background color.
+Default colors are loosely based on [Atom's One Dark
+theme](https://atom.io/themes/one-dark-syntax) and given by:
+
+```bash
+declare -A TRUELINE_COLORS=(
+    [black]='36;39;46'
+    [cursor_grey]='40;44;52'
+    [green]='152;195;121'
+    [grey]='171;178;191'
+    [light_blue]='97;175;239'
+    [mono]='130;137;151'
+    [orange]='209;154;102'
+    [purple]='198;120;221'
+    [red]='224;108;117'
+    [special_grey]='59;64;72'
+    [white]='208;208;208'
+)
+```
+
+Any `TRUELINE_COLORS` array defined in the bashrc file prior to sourcing the Trueline
+script will actually update the default array above (in the sense that it will overwrite
+existing keys and add non-existing ones). This basically means that default colors can
+always be used and the array only needs to be defined when new extra colors are truly
+needed.
+
+_Note:_ you can define any color name you want except for `default_bg` which is used by
+Trueline to obtain the default terminal background color.
 
 ### Segments
 
@@ -182,6 +206,11 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | git_modified  | ✚             |   | working_dir_folder    | U+e5fe        |
 | newline       | U+f155        |   | working_dir_home      | U+f015        |
 | newline_root  | U+f292        |   | working_dir_separator | U+e0b1        |
+
+As with `TRUELINE_COLORS`, any `TRUELINE_SYMBOLS` array defined in the bashrc file prior
+to sourcing the Trueline script will actually update the array with the default symbols
+shown above (thus such array needs to be defined only when overriding some icon or adding
+new ones).
 
 ### Options
 
