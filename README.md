@@ -52,10 +52,10 @@ declare -A TRUELINE_COLORS=(
 )
 
 declare -a TRUELINE_SEGMENTS=(
-    'working_dir,light_blue,black'
-    'git,grey,black'
-    'time,white,black'
-    'newline,pink,black'
+    'working_dir,light_blue,black,normal'
+    'git,grey,black,normal'
+    'time,white,black,normal'
+    'newline,pink,black,bold'
 )
 
 declare -A TRUELINE_SYMBOLS=(
@@ -78,8 +78,9 @@ _trueline_time_segment() {
     if [[ -n "$prompt_time" ]]; then
         local fg_color="$1"
         local bg_color="$2"
+        local font_style="$3"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" normal " $prompt_time ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $prompt_time ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -142,13 +143,14 @@ following structure:
 
 ```bash
 declare -a TRUELINE_SEGMENTS=(
-    'segment_name,segment_fg_color,segment_bg_color'
+    'segment_name,segment_fg_color,segment_bg_color,font_style'
 )
 ```
 
 where the segment foreground and background color names are keys of the `TRUELINE_COLORS`
-array and the order of the elements in the array define the order in which each segment
-is rendered in the prompt.
+array and the font style is either `bold`, `italic`, `normal` or `underlined`. The order
+of the elements in the array define the order in which each segment is rendered in the
+prompt.
 
 Trueline offers the following segments (status indicates whether they are enabled/rendered
 by default):
@@ -170,9 +172,9 @@ To enable the newline segment one could use the following config:
 
 ```bash
 declare -a TRUELINE_SEGMENTS=(
-    'working_dir,mono,cursor_grey'
-    'git,grey,special_grey'
-    'newline,black,orange'
+    'working_dir,mono,cursor_grey,normal'
+    'git,grey,special_grey,normal'
+    'newline,black,orange,bold'
 )
 ```
 
@@ -253,10 +255,10 @@ The next segments have (sub)settings of their own:
     `.bashrc` via `set -o vi`). When set to `true` a new segment is shown first (i.e
     before any other segment defined in `TRUELINE_SEGMENTS`) and it's appearance can be
     controlled by means of the following variables:
-    - `TRUELINE_VIMODE_INS_COLORS=('black' 'light_blue')`: insert mode segment foreground
-    and background colors.
-    - `TRUELINE_VIMODE_CMD_COLORS=('black' 'green')`: command mode segment foreground
-    and background colors.
+    - `TRUELINE_VIMODE_INS_COLORS_STYLE=('black' 'light_blue' 'bold')`: insert mode
+    segment foreground/background colors and font style.
+    - `TRUELINE_VIMODE_CMD_COLORS_STYLE=('black' 'green' 'bold')`: command mode
+    segment foreground/background colors and font style.
     - `TRUELINE_VIMODE_INS_CURSOR='vert'`: insert mode cursor shape (possible
     values are `vert`, `block` and `under`).
     - `TRUELINE_VIMODE_CMD_CURSOR='block'`: command mode cursor shape (possible
@@ -272,16 +274,15 @@ _trueline_new_segment_name_segment() {
     if [[ -n "$some_content" ]]; then
         local fg_color="$1"
         local bg_color="$2"
+        local font_style="$3"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" bold " $some_content ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $some_content ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
 }
 ```
 
-and then simply including the `new_segment_name` in your `TRUELINE_SEGMENTS` array. Note
-that the third argument in the `_trueline_content` function above is the segment font
-style (it can take one of the following values: normal, bold, italic or underlined).
+and then simply including the `new_segment_name` in your `TRUELINE_SEGMENTS` array.
 
 PRs with complicated segments are welcome!
