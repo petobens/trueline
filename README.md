@@ -205,7 +205,7 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | git_branch    | U+e0a0        |   | venv                  | U+e73c        |
 | git_github    | U+f408        |   | vimode_cmd            | N             |
 | git_gitlab    | U+f296        |   | vimode_ins            | I             |
-| git_modified  | ✚             |   | working_dir_folder    | U+e5fe        |
+| git_modified  | U+f44d        |   | working_dir_folder    | U+e5fe        |
 | newline       | U+f155        |   | working_dir_home      | U+f015        |
 | newline_root  | U+f292        |   | working_dir_separator | U+e0b1        |
 
