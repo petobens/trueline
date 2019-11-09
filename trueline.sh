@@ -7,20 +7,23 @@ _trueline_font_style() {
     case "$style" in
         bold)
             style=1 ;;
+        dim)
+            style=2 ;;
         italic)
             style=3 ;;
         underlined)
             style=4 ;;
         **)
-            style=2 ;;
+            style=22 ;;
     esac
+    style+="m"
     echo "$style"
 }
 
 _trueline_content() {
     fg_c="${TRUELINE_COLORS[$1]}"
     bg_c="$2"
-    style="$(_trueline_font_style "$3")m"
+    style="$(_trueline_font_style "$3")"
     content="$4"
     esc_seq_start="\["
     esc_seq_end="\]"

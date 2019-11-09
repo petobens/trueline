@@ -148,9 +148,9 @@ declare -a TRUELINE_SEGMENTS=(
 ```
 
 where the segment foreground and background color names are keys of the `TRUELINE_COLORS`
-array and the font style is either `bold`, `italic`, `normal` or `underlined`. The order
-of the elements in the array define the order in which each segment is rendered in the
-prompt.
+array and the font style is either `bold`, `dim`, `italic`, `normal` or `underlined`. The
+order of the elements in the array define the order in which each segment is rendered in
+the prompt.
 
 Trueline offers the following segments (status indicates whether they are enabled/rendered
 by default):
