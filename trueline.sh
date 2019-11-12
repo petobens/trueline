@@ -31,7 +31,7 @@ _trueline_content() {
         esc_seq_start="\1"
         esc_seq_end="\2"
     fi
-    output="$esc_seq_start\033[38;2;$fg_c;"
+    output="$esc_seq_start\033[0m\033[38;2;$fg_c;"
     if [[ "$bg_c" != 'default_bg' ]]; then
         bg_c="${TRUELINE_COLORS[$bg_c]}"
         output+="48;2;$bg_c;"
