@@ -6,15 +6,20 @@ _trueline_font_style() {
     style="$1"
     case "$style" in
         bold)
-            style=1 ;;
+            style=1
+            ;;
         dim)
-            style=2 ;;
+            style=2
+            ;;
         italic)
-            style=3 ;;
+            style=3
+            ;;
         underlined)
-            style=4 ;;
+            style=4
+            ;;
         **)
-            style=22 ;;
+            style=22
+            ;;
     esac
     style+="m"
     echo "$style"
@@ -50,7 +55,6 @@ _trueline_separator() {
         _trueline_content "$_last_color" "$bg_color" bold "${TRUELINE_SYMBOLS[segment_separator]}"
     fi
 }
-
 
 #----------+
 # Segments |
@@ -130,7 +134,7 @@ _trueline_git_behind_ahead() {
     branch="$1"
     upstream="$(git config --get branch."$branch".merge)"
     if [[ -n $upstream ]]; then
-        nr_behind_ahead="$(git rev-list --count --left-right '@{upstream}...HEAD' 2>/dev/null)" || nr_behind_ahead=''
+        nr_behind_ahead="$(git rev-list --count --left-right '@{upstream}...HEAD' 2> /dev/null)" || nr_behind_ahead=''
         nr_behind="${nr_behind_ahead%	*}"
         nr_ahead="${nr_behind_ahead#*	}"
         git_behind_ahead=''
@@ -161,7 +165,7 @@ _trueline_git_remote_icon() {
     elif [[ "$remote" =~ "gitlab" ]]; then
         remote_icon="${TRUELINE_SYMBOLS[git_gitlab]} "
     fi
-    if [[ -n "${remote_icon// }" ]]; then
+    if [[ -n "${remote_icon// /}" ]]; then
         remote_icon=" $remote_icon "
     fi
     echo "$remote_icon"
@@ -290,11 +294,14 @@ _trueline_vimode_cursor_shape() {
     shape="$1"
     case "$shape" in
         under)
-            cursor_parameter=4 ;;
+            cursor_parameter=4
+            ;;
         vert)
-            cursor_parameter=6 ;;
+            cursor_parameter=6
+            ;;
         **)
-            cursor_parameter=2 ;;
+            cursor_parameter=2
+            ;;
     esac
     echo "\1\e[$cursor_parameter q\2"
 }
@@ -330,7 +337,6 @@ _trueline_vimode_segment() {
     fi
 }
 
-
 #-------------+
 # PS1 and PS2 |
 #-------------+
@@ -361,7 +367,7 @@ _trueline_prompt_command() {
 
     _trueline_vimode_segment
     PS1+=$(_trueline_content "$_last_color" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]}")
-    PS1+=" "  # non-breakable space
+    PS1+=" " # non-breakable space
     _trueline_continuation_prompt
 
     unset _first_color_fg
@@ -371,22 +377,21 @@ _trueline_prompt_command() {
     unset _exit_status
 }
 
-
 #---------------+
 # Configuration |
 #---------------+
 declare -A TRUELINE_COLORS_DEFAULT=(
-    [black]='36;39;46' #24272e
-    [cursor_grey]='40;44;52' #282c34
-    [green]='152;195;121' #98c379
-    [grey]='171;178;191' #abb2bf
+    [black]='36;39;46'        #24272e
+    [cursor_grey]='40;44;52'  #282c34
+    [green]='152;195;121'     #98c379
+    [grey]='171;178;191'      #abb2bf
     [light_blue]='97;175;239' #61afef
-    [mono]='130;137;151' #828997
-    [orange]='209;154;102' #d19a66
-    [purple]='198;120;221' #c678dd
-    [red]='224;108;117' #e06c75
+    [mono]='130;137;151'      #828997
+    [orange]='209;154;102'    #d19a66
+    [purple]='198;120;221'    #c678dd
+    [red]='224;108;117'       #e06c75
     [special_grey]='59;64;72' #3b4048
-    [white]='208;208;208' #d0d0d0
+    [white]='208;208;208'     #d0d0d0
 )
 if [[ "${#TRUELINE_COLORS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_COLORS=()
@@ -490,7 +495,6 @@ fi
 if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH" ]]; then
     TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1
 fi
-
 
 #----------------+
 # PROMPT_COMMAND |
