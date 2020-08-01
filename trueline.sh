@@ -116,6 +116,22 @@ _trueline_venv_segment() {
     fi
 }
 
+_trueline_has_conda_env() {
+    printf "%s" "${CONDA_DEFAULT_ENV}"
+}
+_trueline_conda_env_segment() {
+    local conda_env="$(_trueline_has_conda_env)"
+    if [[ -n "$conda_env" ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[venv]} $conda_env")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
+}
+
 _trueline_has_git_branch() {
     printf "%s" "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 }
@@ -407,6 +423,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     declare -a TRUELINE_SEGMENTS=(
         'user,black,white,bold'
         'venv,black,purple,bold'
+        # 'conda_env,black,purple,bold'
         'git,grey,special_grey,normal'
         'working_dir,mono,cursor_grey,normal'
         'read_only,black,orange,bold'
