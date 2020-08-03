@@ -337,6 +337,47 @@ _trueline_vimode_segment() {
     fi
 }
 
+_trueline_cmd_duration_segment() {
+
+    function format_time {
+    # Credit goes to https://unix.stackexchange.com/a/27014
+    local T=$1
+    local D=$((T/60/60/24))
+    local H=$((T/60/60%24))
+    local M=$((T/60%60))
+    local S=$((T%60))
+    local result=""
+    
+    (( $D > 0 )) && result="${D}d "
+    (( $H > 0 )) && result="${result}${H}h "
+    (( $M > 0 )) && result="${result}${M}m "
+    (( $S > 0 )) && result="${result}${S}s "
+    echo -e "${result}" | sed -e 's/[[:space:]]*$//'
+    }
+
+    TIMESTAMP_FILE="/tmp/trueline.user-${USER}.pid-$$.timestamp"
+    PS0='$(date +%s > "$TIMESTAMP_FILE")'
+    local duration=0
+
+    if [ -e $TIMESTAMP_FILE ]; then
+        local end=$(date +%s)
+        local start=$(cat "$TIMESTAMP_FILE")
+        duration="$(($end - $start))"
+        rm -f "$TIMESTAMP_FILE" 2>/dev/null
+    fi
+
+    if (( duration > 0 )); then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        local elapsed="$(format_time duration)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[timer]}$elapsed ")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
+}
+
 #-------------+
 # PS1 and PS2 |
 #-------------+
@@ -413,6 +454,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'bg_jobs,black,orange,bold'
         'exit_status,black,red,bold'
         # 'newline,black,orange,bold'
+        # 'cmd_duration,black,grey,normal'
     )
 fi
 
@@ -431,6 +473,7 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [read_only]=''
     [segment_separator]=''
     [ssh]=''
+    [timer]='羽'
     [venv]=''
     [vimode_cmd]='N'
     [vimode_ins]='I'

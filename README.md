@@ -158,6 +158,7 @@ by default):
 | Segment Name   | Status     | Description                                   |
 | -------------- | ---------- | -------------                                 |
 | bg_jobs        | enabled    | number of background jobs                     |
+| cmd_duration   | disabled   | last command execution time                   |
 | exit_status    | enabled    | return code of last command                   |
 | git            | enabled    | git branch/remote and repository status       |
 | newline        | disabled   | splits prompt segments across multiple lines  |
@@ -198,16 +199,17 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 
 | Symbol Name   | Glyph         |   | Symbol Name           | Glyph         |
 | ------------- | ------------- | - | -------------         | ------------- |
-| bg_jobs       | U+f085        |   | ps2                   | ...           |
-| git_ahead     | U+f55c        |   | read_only             | U+f023        |
-| git_behind    | U+f544        |   | segment_separator     | U+e0b0        |
-| git_bitbucket | U+f171        |   | ssh                   | U+f817        |
+| bg_jobs       | U+f085        |   | read_only             | U+f023        |
+| git_ahead     | U+f55c        |   | segment_separator     | U+e0b0        |
+| git_behind    | U+f544        |   | ssh                   | U+f817        |
+| git_bitbucket | U+f171        |   | timer                 | U+fa1e        |
 | git_branch    | U+e0a0        |   | venv                  | U+e73c        |
 | git_github    | U+f408        |   | vimode_cmd            | N             |
 | git_gitlab    | U+f296        |   | vimode_ins            | I             |
 | git_modified  | U+f44d        |   | working_dir_folder    | U+e5fe        |
 | newline       | U+f155        |   | working_dir_home      | U+f015        |
 | newline_root  | U+f292        |   | working_dir_separator | U+e0b1        |
+| ps2           | ...           |
 
 As with `TRUELINE_COLORS`, any `TRUELINE_SYMBOLS` array defined in the bashrc file prior
 to sourcing the Trueline script will actually update the array with the default symbols
