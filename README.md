@@ -164,6 +164,7 @@ by default):
 | read_only      | enabled    | indicator of read only directory              |
 | user           | enabled    | username and host (conditional on ssh status) |
 | venv           | enabled    | Python virtual environment                    |
+| conda_env      | disabled   | current anaconda environment                  |
 | working_dir    | enabled    | current working directory                     |
 
 but more segments can be easily added (see [Extensions](#Extensions)).
