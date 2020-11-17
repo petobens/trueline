@@ -222,11 +222,16 @@ _trueline_working_dir_segment() {
     local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]}}"
     local arr=
     IFS='/' read -r -a arr <<< "$p"
+    if [[ $(cut -d"." -f1 <<< $BASH_VERSION) -ge 4 && $(cut -d"." -f2 <<< $BASH_VERSION) -ge 2 ]]; then
+         local curidx_=-1
+    else
+         local curidx_=+1
+    fi
     local path_size="${#arr[@]}"
     if [[ "$path_size" -eq 1 ]]; then
         local path_="\[\033[1m\]${arr[0]:=/}"
     elif [[ "$path_size" -eq 2 ]]; then
-        local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[+1]}"
+        #local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[-1]}"
     else
         if [[ "$path_size" -gt 3 ]]; then
             if [[ "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" = true ]]; then
