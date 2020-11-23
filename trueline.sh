@@ -284,7 +284,7 @@ _trueline_exit_status_segment() {
         local bg_color="$2"
         local font_style="$3"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $_exit_status ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" "${TRUELINE_SYMBOLS[exit_status]} $_exit_status ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -435,6 +435,7 @@ fi
 
 declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [bg_jobs]=''
+    [exit_status]=''
     [git_ahead]=''
     [git_behind]=''
     [git_bitbucket]=''
