@@ -132,6 +132,22 @@ _trueline_conda_env_segment() {
     fi
 }
 
+_trueline_has_aws_profile() {
+    printf "%s" "${AWS_PROFILE}"
+}
+_trueline_aws_profile_segment() {
+    local profile_aws="$(_trueline_has_aws_profile)"
+    if [[ -n "$profile_aws" ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[aws_profile]} $profile_aws ")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
+}
+
 _trueline_has_git_branch() {
     printf "%s" "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 }
@@ -422,6 +438,7 @@ unset TRUELINE_COLORS_DEFAULT
 if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     declare -a TRUELINE_SEGMENTS=(
         'user,black,white,bold'
+        'aws_profile,black,orange,bold'
         'venv,black,purple,bold'
         # 'conda_env,black,purple,bold'
         'git,grey,special_grey,normal'
@@ -434,6 +451,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
 fi
 
 declare -A TRUELINE_SYMBOLS_DEFAULT=(
+    [aws_profile]=''
     [bg_jobs]=''
     [exit_status]=''
     [git_ahead]=''
