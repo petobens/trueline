@@ -86,16 +86,9 @@ _trueline_user_segment() {
         bg_color=${TRUELINE_USER_ROOT_COLORS[1]}
     fi
     local has_ssh="$(_trueline_has_ssh)"
-
-    # If it's an ssh connection add the ssh symbol in front of the username
-    #----------------------------------------------------------------------
     if [[ -n "$has_ssh" ]]; then 
         user="${TRUELINE_SYMBOLS[ssh]} $user"
     fi
-
-    # In case of an ssh connection or if the option for always displaying the hostname
-    # is set add an "@" to the username before adding IP address or hostname
-    #---------------------------------------------------------------------------------
     if [[ -n "$has_ssh" ]] || [[ "$TRUELINE_USER_ALWAYS_SHOW_HOSTNAME" = true ]]; then
         user+="@"
         if [ "$TRUELINE_USER_SHOW_IP_SSH" = true ]; then
@@ -530,8 +523,6 @@ fi
 if [[ -z "$TRUELINE_USER_SHOW_IP_SSH" ]]; then
     TRUELINE_USER_SHOW_IP_SSH=false
 fi
-# Option to always display the hostname or IP - not just when connected via ssh
-#------------------------------------------------------------------------------
 if [[ -z "$TRUELINE_USER_ALWAYS_SHOW_HOSTNAME" ]]; then
     TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false
 fi
