@@ -340,33 +340,34 @@ _trueline_vimode_segment() {
 _trueline_cmd_duration_segment() {
 
     function format_time {
-    # Credit goes to https://unix.stackexchange.com/a/27014
-    local T=$1
-    local D=$((T/60/60/24))
-    local H=$((T/60/60%24))
-    local M=$((T/60%60))
-    local S=$((T%60))
-    local result=""
-    
-    (( $D > 0 )) && result="${D}d "
-    (( $H > 0 )) && result="${result}${H}h "
-    (( $M > 0 )) && result="${result}${M}m "
-    (( $S > 0 )) && result="${result}${S}s "
-    echo -e "${result}" | sed -e 's/[[:space:]]*$//'
+        local T=$1
+        local D=$((T / 60 / 60 / 24))
+        local H=$((T / 60 / 60 % 24))
+        local M=$((T / 60 % 60))
+        local S=$((T % 60))
+        local result=""
+
+        ((D > 0)) && result="${D}d "
+        ((H > 0)) && result="${result}${H}h "
+        ((M > 0)) && result="${result}${M}m "
+        ((S > 0)) && result="${result}${S}s "
+        echo -e "${result}" | sed -e 's/[[:space:]]*$//'
     }
 
-    TIMESTAMP_FILE="/tmp/trueline.user-${USER}.pid-$$.timestamp"
-    PS0='$(date +%s > "$TIMESTAMP_FILE")'
+    # PS0 gets expanded after a command is read (just before execution)
+    TRUELINE_TIMESTAMP_FILE="/tmp/trueline.user-${USER}.pid-$$.timestamp"
+    # shellcheck disable=SC2034,SC2016
+    PS0='$(date +%s > "$TRUELINE_TIMESTAMP_FILE")'
+
     local duration=0
-
-    if [ -e $TIMESTAMP_FILE ]; then
+    if [ -e "$TRUELINE_TIMESTAMP_FILE" ]; then
         local end=$(date +%s)
-        local start=$(cat "$TIMESTAMP_FILE")
-        duration="$(($end - $start))"
-        rm -f "$TIMESTAMP_FILE" 2>/dev/null
+        local start=$(cat "$TRUELINE_TIMESTAMP_FILE")
+        duration="$((end - start))"
     fi
+    command rm -f "$TRUELINE_TIMESTAMP_FILE" 2> /dev/null
 
-    if (( duration > 0 )); then
+    if ((duration > 0)); then
         local fg_color="$1"
         local bg_color="$2"
         local font_style="$3"
