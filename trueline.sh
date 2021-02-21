@@ -116,6 +116,38 @@ _trueline_venv_segment() {
     fi
 }
 
+_trueline_has_conda_env() {
+    printf "%s" "${CONDA_DEFAULT_ENV}"
+}
+_trueline_conda_env_segment() {
+    local conda_env="$(_trueline_has_conda_env)"
+    if [[ -n "$conda_env" ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[venv]} $conda_env")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
+}
+
+_trueline_has_aws_profile() {
+    printf "%s" "${AWS_PROFILE}"
+}
+_trueline_aws_profile_segment() {
+    local profile_aws="$(_trueline_has_aws_profile)"
+    if [[ -n "$profile_aws" ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[aws_profile]} $profile_aws ")"
+        PS1+="$segment"
+        _last_color=$bg_color
+    fi
+}
+
 _trueline_has_git_branch() {
     printf "%s" "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 }
@@ -210,7 +242,7 @@ _trueline_working_dir_segment() {
     if [[ "$path_size" -eq 1 ]]; then
         local path_="\[\033[1m\]${arr[0]:=/}"
     elif [[ "$path_size" -eq 2 ]]; then
-        local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[-1]}"
+        local path_="${arr[0]:=/}$wd_separator\[\033[1m\]${arr[+1]}"
     else
         if [[ "$path_size" -gt 3 ]]; then
             if [[ "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" = true ]]; then
@@ -268,7 +300,7 @@ _trueline_exit_status_segment() {
         local bg_color="$2"
         local font_style="$3"
         local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $_exit_status ")"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" "${TRUELINE_SYMBOLS[exit_status]} $_exit_status ")"
         PS1+="$segment"
         _last_color=$bg_color
     fi
@@ -448,7 +480,9 @@ unset TRUELINE_COLORS_DEFAULT
 if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
     declare -a TRUELINE_SEGMENTS=(
         'user,black,white,bold'
+        'aws_profile,black,orange,bold'
         'venv,black,purple,bold'
+        # 'conda_env,black,purple,bold'
         'git,grey,special_grey,normal'
         'working_dir,mono,cursor_grey,normal'
         'read_only,black,orange,bold'
@@ -460,7 +494,9 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
 fi
 
 declare -A TRUELINE_SYMBOLS_DEFAULT=(
+    [aws_profile]=''
     [bg_jobs]=''
+    [exit_status]=''
     [git_ahead]=''
     [git_behind]=''
     [git_bitbucket]=''
