@@ -97,7 +97,6 @@ _trueline_user_segment() {
             user+="$HOSTNAME"
         fi
     fi
-
     local segment="$(_trueline_separator)"
     segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $user ")"
     PS1+="$segment"
