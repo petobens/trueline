@@ -385,6 +385,12 @@ _trueline_cmd_duration_segment() {
         ((S > 0)) && result="${result}${S}s "
         echo -e "${result}" | sed -e 's/[[:space:]]*$//'
     }
+    
+    function cleanup () {
+        command rm -f "$TRUELINE_TIMESTAMP_FILE" 2> /dev/null
+    }
+    
+    trap cleanup EXIT
 
     # PS0 gets expanded after a command is read (just before execution)
     TRUELINE_TIMESTAMP_FILE="/tmp/trueline.user-${USER}.pid-$$.timestamp"
@@ -397,8 +403,9 @@ _trueline_cmd_duration_segment() {
         local start=$(cat "$TRUELINE_TIMESTAMP_FILE")
         duration="$((end - start))"
     fi
-    command rm -f "$TRUELINE_TIMESTAMP_FILE" 2> /dev/null
-
+    
+    cleanup
+    
     if ((duration > 0)); then
         local fg_color="$1"
         local bg_color="$2"
