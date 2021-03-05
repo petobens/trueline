@@ -371,7 +371,7 @@ _trueline_vimode_segment() {
 
 _trueline_cmd_duration_segment() {
 
-    function format_time {
+    function _trueline_format_time {
         local T=$1
         local D=$((T / 60 / 60 / 24))
         local H=$((T / 60 / 60 % 24))
@@ -385,12 +385,12 @@ _trueline_cmd_duration_segment() {
         ((S > 0)) && result="${result}${S}s "
         echo -e "${result}" | sed -e 's/[[:space:]]*$//'
     }
-    
-    function cleanup () {
+
+    function _trueline_timestamp_cleanup() {
         command rm -f "$TRUELINE_TIMESTAMP_FILE" 2> /dev/null
     }
-    
-    trap cleanup EXIT
+
+    trap _trueline_timestamp_cleanup EXIT
 
     # PS0 gets expanded after a command is read (just before execution)
     TRUELINE_TIMESTAMP_FILE="/tmp/trueline.user-${USER}.pid-$$.timestamp"
@@ -402,16 +402,15 @@ _trueline_cmd_duration_segment() {
         local end=$(date +%s)
         local start=$(cat "$TRUELINE_TIMESTAMP_FILE")
         duration="$((end - start))"
+        _trueline_timestamp_cleanup
     fi
-    
-    cleanup
-    
+
     if ((duration > 0)); then
         local fg_color="$1"
         local bg_color="$2"
         local font_style="$3"
         local segment="$(_trueline_separator)"
-        local elapsed="$(format_time duration)"
+        local elapsed="$(_trueline_format_time duration)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[timer]}$elapsed ")"
         PS1+="$segment"
         _last_color=$bg_color
