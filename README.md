@@ -159,6 +159,7 @@ by default):
 | -------------- | ---------- | -------------                                 |
 | aws_profile    | enabled    | current AWS profile                           |
 | bg_jobs        | enabled    | number of background jobs                     |
+| cmd_duration   | disabled   | last command execution time                   |
 | conda_env      | disabled   | current anaconda environment                  |
 | exit_status    | enabled    | return code of last command                   |
 | git            | enabled    | git branch/remote and repository status       |
@@ -200,17 +201,18 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 
 | Symbol Name   | Glyph         |   | Symbol Name           | Glyph         |
 | ------------- | ------------- | - | -------------         | ------------- |
-| aws_profile   | U+f52c        |   | newline_root          | U+f292        |
-| bg_jobs       | U+f085        |   | ps2                   | ...           |
-| exit_status   | blank         |   | read_only             | U+f023        |
-| git_ahead     | U+f55c        |   | segment_separator     | U+e0b0        |
-| git_behind    | U+f544        |   | ssh                   | U+f817        |
+| aws_profile   | U+f52c        |   | ps2                   | ...           |
+| bg_jobs       | U+f085        |   | read_only             | U+f023        |
+| exit_status   | blank         |   | segment_separator     | U+e0b0        |
+| git_ahead     | U+f55c        |   | ssh                   | U+f817        |
+| git_behind    | U+f544        |   | timer                 | U+fa1e        |
 | git_bitbucket | U+f171        |   | venv (and conda)      | U+e73c        |
 | git_branch    | U+e0a0        |   | vimode_cmd            | N             |
 | git_github    | U+f408        |   | vimode_ins            | I             |
 | git_gitlab    | U+f296        |   | working_dir_folder    | U+e5fe        |
 | git_modified  | U+f44d        |   | working_dir_home      | U+f015        |
 | newline       | U+f155        |   | working_dir_separator | U+e0b1        |
+| newline_root  | U+f52c        |
 
 As with `TRUELINE_COLORS`, any `TRUELINE_SYMBOLS` array defined in the bashrc file prior
 to sourcing the Trueline script will actually update the array with the default symbols
