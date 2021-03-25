@@ -56,6 +56,16 @@ _trueline_separator() {
     fi
 }
 
+_trueline_record_colors() {
+    local force="$4"
+    if [[ -z "$_first_color_fg" ]] || [[ -n "$force" ]]; then
+        _first_color_fg="$1"
+        _first_color_bg="$2"
+        _first_font_style="$3"
+    fi
+    _last_color="$2"
+}
+
 #----------+
 # Segments |
 #----------+
@@ -86,7 +96,7 @@ _trueline_user_segment() {
         bg_color=${TRUELINE_USER_ROOT_COLORS[1]}
     fi
     local has_ssh="$(_trueline_has_ssh)"
-    if [[ -n "$has_ssh" ]]; then 
+    if [[ -n "$has_ssh" ]]; then
         user="${TRUELINE_SYMBOLS[ssh]} $user"
     fi
     if [[ -n "$has_ssh" ]] || [[ "$TRUELINE_USER_ALWAYS_SHOW_HOSTNAME" = true ]]; then
@@ -100,7 +110,7 @@ _trueline_user_segment() {
     local segment="$(_trueline_separator)"
     segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $user ")"
     PS1+="$segment"
-    _last_color=$bg_color
+    _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
 }
 
 _trueline_has_venv() {
@@ -115,7 +125,7 @@ _trueline_venv_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[venv]} $venv ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -131,7 +141,7 @@ _trueline_conda_env_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[venv]} $conda_env")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -147,7 +157,7 @@ _trueline_aws_profile_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[aws_profile]} $profile_aws ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -224,7 +234,7 @@ _trueline_git_segment() {
             segment+="$(_trueline_content "$TRUELINE_GIT_BEHIND_AHEAD_COLOR" "$bg_color" "$font_style" "$behind_ahead")"
         fi
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -263,7 +273,7 @@ _trueline_working_dir_segment() {
     fi
     segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $path_ ")"
     PS1+="$segment"
-    _last_color=$bg_color
+    _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
 }
 
 _trueline_bg_jobs_segment() {
@@ -275,7 +285,7 @@ _trueline_bg_jobs_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[bg_jobs]} $bg_jobs ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -293,7 +303,7 @@ _trueline_read_only_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[read_only]} ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -305,7 +315,7 @@ _trueline_exit_status_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" "${TRUELINE_SYMBOLS[exit_status]} $_exit_status ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -322,7 +332,7 @@ _trueline_newline_segment() {
     segment+="\n"
     segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" "$newline_symbol")"
     PS1+="$segment"
-    _last_color=$bg_color
+    _trueline_record_colors "$fg_color" "$bg_color" "$font_style" true
 }
 
 _trueline_vimode_cursor_shape() {
@@ -416,7 +426,7 @@ _trueline_cmd_duration_segment() {
         local elapsed="$(_trueline_format_time duration)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " ${TRUELINE_SYMBOLS[timer]}$elapsed ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -438,11 +448,6 @@ _trueline_prompt_command() {
         local segment_fg=$(echo "$segment_def" | cut -d ',' -f2)
         local segment_bg=$(echo "$segment_def" | cut -d ',' -f3)
         local font_style=$(echo "$segment_def" | cut -d ',' -f4)
-        if [[ -z "$_first_color_fg" ]] || [[ "$segment_name" = 'newline' ]]; then
-            _first_color_fg="$segment_fg"
-            _first_color_bg="$segment_bg"
-            _first_font_style="$font_style"
-        fi
         # Note: we cannot call within a subshell because global variables
         # (such as _last_color) won't be passed along
         '_trueline_'"$segment_name"'_segment' "$segment_fg" "$segment_bg" "$font_style"
@@ -491,14 +496,14 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'user,black,white,bold'
         'aws_profile,black,orange,bold'
         'venv,black,purple,bold'
-        # 'conda_env,black,purple,bold'
+        'conda_env,black,purple,bold'
         'git,grey,special_grey,normal'
         'working_dir,mono,cursor_grey,normal'
         'read_only,black,orange,bold'
         'bg_jobs,black,orange,bold'
         'exit_status,black,red,bold'
-        # 'newline,black,orange,bold'
         # 'cmd_duration,black,grey,normal'
+        # 'newline,black,orange,bold'
     )
 fi
 
