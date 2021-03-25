@@ -82,7 +82,7 @@ _trueline_time_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $prompt_time ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 
@@ -160,7 +160,7 @@ by default):
 | aws_profile    | enabled    | current AWS profile                           |
 | bg_jobs        | enabled    | number of background jobs                     |
 | cmd_duration   | disabled   | last command execution time                   |
-| conda_env      | disabled   | current anaconda environment                  |
+| conda_env      | enabled    | current anaconda environment                  |
 | exit_status    | enabled    | return code of last command                   |
 | git            | enabled    | git branch/remote and repository status       |
 | newline        | disabled   | splits prompt segments across multiple lines  |
@@ -243,7 +243,7 @@ The next segments have (sub)settings of their own:
     background colors.
     - `TRUELINE_USER_SHOW_IP_SSH=false`: boolean variable that determines whether to
     show the ip address or hostname in a ssh connection.
-    - `TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false`: boolean variable that determines 
+    - `TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false`: boolean variable that determines
     whether to always show the ip address or hostname (not just in a ssh connection).
 - working_dir:
     - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
@@ -285,7 +285,7 @@ _trueline_new_segment_name_segment() {
         local segment="$(_trueline_separator)"
         segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $some_content ")"
         PS1+="$segment"
-        _last_color=$bg_color
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
     fi
 }
 ```
