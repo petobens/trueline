@@ -454,7 +454,13 @@ _trueline_prompt_command() {
     done
 
     _trueline_vimode_segment
-    PS1+=$(_trueline_content "$_last_color" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]}")
+    # Provide an option for a segment-enclosed prompt or a raw prompt
+    if [ "$TRUELINE_NEWLINE_PROMPT_WITHOUT_SEGMENT" = true ]; then
+        # Use default_fg and default_bg with this option for a raw prompt
+        PS1+=$(_trueline_content "$_last_color" default_bg bold)
+    else
+        PS1+=$(_trueline_content "$_last_color" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]}")
+    fi
     PS1+=" " # non-breakable space
     _trueline_continuation_prompt
 
