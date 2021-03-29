@@ -103,6 +103,8 @@ _trueline_user_segment() {
         user+="@"
         if [ "$TRUELINE_USER_SHOW_IP_SSH" = true ]; then
             user+="$(_trueline_ip_address)"
+        elif [ "$TRUELINE_USER_SHORTEN_HOSTNAME" = true ]; then
+            user+="$(hostname -s)"
         else
             user+="$HOSTNAME"
         fi
