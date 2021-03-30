@@ -245,6 +245,9 @@ The next segments have (sub)settings of their own:
     show the ip address or hostname in a ssh connection.
     - `TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false`: boolean variable that determines
     whether to always show the ip address or hostname (not just in a ssh connection).
+    - `TRUELINE_USER_SHORTEN_HOSTNAME=false`: boolean variable that determines
+    whether to display the full hostname (host.domain.com), or the shortened hostname
+    (host).
 - working_dir:
     - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
     determines whether to add (or not) a space before and after the path separator.
