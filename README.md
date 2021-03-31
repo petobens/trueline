@@ -204,15 +204,15 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | aws_profile   | U+f52c        |   | ps2                   | ...           |
 | bg_jobs       | U+f085        |   | read_only             | U+f023        |
 | exit_status   | blank         |   | segment_separator     | U+e0b0        |
-| git_ahead     | U+f55c        |   | ssh                   | U+f817        |
-| git_behind    | U+f544        |   | timer                 | U+fa1e        |
-| git_bitbucket | U+f171        |   | venv (and conda)      | U+e73c        |
-| git_branch    | U+e0a0        |   | vimode_cmd            | N             |
-| git_github    | U+f408        |   | vimode_ins            | I             |
-| git_gitlab    | U+f296        |   | working_dir_folder    | U+e5fe        |
-| git_modified  | U+f44d        |   | working_dir_home      | U+f015        |
-| newline       | U+f155        |   | working_dir_separator | U+e0b1        |
-| newline_root  | U+f52c        |
+| git_ahead     | U+f55c        |   | local                 | U+f108        |
+| git_behind    | U+f544        |   | ssh                   | U+f817        |
+| git_bitbucket | U+f171        |   | timer                 | U+fa1e        |
+| git_branch    | U+e0a0        |   | venv (and conda)      | U+e73c        |
+| git_github    | U+f408        |   | vimode_cmd            | N             |
+| git_gitlab    | U+f296        |   | vimode_ins            | I             |
+| git_modified  | U+f44d        |   | working_dir_folder    | U+e5fe        |
+| newline       | U+f155        |   | working_dir_home      | U+f015        |
+| newline_root  | U+f292        |   | working_dir_separator | U+e0b1        |
 
 As with `TRUELINE_COLORS`, any `TRUELINE_SYMBOLS` array defined in the bashrc file prior
 to sourcing the Trueline script will actually update the array with the default symbols
@@ -240,14 +240,25 @@ The next segments have (sub)settings of their own:
     number of commits behind/ahead.
 - user:
     - `TRUELINE_USER_ROOT_COLORS=('black' 'red')`: root user foreground and
-    background colors.
-    - `TRUELINE_USER_SHOW_IP_SSH=false`: boolean variable that determines whether to
-    show the ip address or hostname in a ssh connection.
-    - `TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false`: boolean variable that determines
-    whether to always show the ip address or hostname (not just in a ssh connection).
-    - `TRUELINE_USER_SHORTEN_HOSTNAME=false`: boolean variable that determines
-    whether to display the full hostname (host.domain.com), or the shortened hostname
-    (host).
+    background colors, when root has Trueline installed with this setting.
+    - `TRUELINE_USER_SHOW_HOST__SSH=false`: boolean variable that determines whether
+    to show the host portion of the segment (or just the user portion) to an SSH
+    user connecting *to the host* where this option is set.
+    - `TRUELINE_USER_SHOW_IP__SSH=false`: boolean variable that determines whether
+    to show the IP address as the host portion of the segment to an SSH user
+    connecting *to the host* where this option is set.
+    - `TRUELINE_USER_SHORT_HOSTNAME__SSH=true`: boolean variable that determines
+    whether to show the short hostname (host) or the full hostname (host.domain.com)
+    to an SSH user connecting *to the host* where this option is set.
+    - `TRUELINE_USER_SHOW_HOST__LOCAL=false`: boolean variable that determines
+    whether to show the host portion of the segment (or just the user portion)
+    to a local user.
+    - `TRUELINE_USER_SHOW_IP__LOCAL=false`: boolean variable that determines
+    whether to show the IP address as the host portion of the segment to a local
+    user.
+    - `TRUELINE_USER_SHORT_HOSTNAME__LOCAL=true`: boolean variable that determines
+    whether to show the short hostname (host) or the full hostname (host.domain.com)
+    to a local user.
 - working_dir:
     - `TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true`: boolean variable that
     determines whether to add (or not) a space before and after the path separator.
