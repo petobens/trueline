@@ -69,6 +69,8 @@ _trueline_record_colors() {
 #----------+
 # Segments |
 #----------+
+# In the User segment we distinguish between the "local" user and the user who
+# is "using SSH". We allow independent segment settings for each user type.
 _trueline_is_root() {
     if [[ "${EUID}" -eq 0 ]]; then
         echo 'is_root'
@@ -77,9 +79,11 @@ _trueline_is_root() {
 _trueline_ip_address() {
     \ip route get 1 | tr -s ' ' | cut -d' ' -f7
 }
-_trueline_has_ssh() {
+_trueline_using_ssh() {
+    # Values for SSH_CLIENT and SSH_TTY are only set when a user is logged in
+    # using SSH. They are otherwise blank, i.e. for the local user.
     if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-        echo 'has_ssh'
+        echo 'using_ssh'
     fi
 }
 _trueline_user_segment() {
@@ -95,18 +99,34 @@ _trueline_user_segment() {
         fg_color=${TRUELINE_USER_ROOT_COLORS[0]}
         bg_color=${TRUELINE_USER_ROOT_COLORS[1]}
     fi
-    local has_ssh="$(_trueline_has_ssh)"
-    if [[ -n "$has_ssh" ]]; then
+    local using_ssh="$(_trueline_using_ssh)"
+    if [[ -n "$using_ssh" ]]; then
+        # This is an SSH user
         user="${TRUELINE_SYMBOLS[ssh]} $user"
-    fi
-    if [[ -n "$has_ssh" ]] || [[ "$TRUELINE_USER_ALWAYS_SHOW_HOSTNAME" = true ]]; then
-        user+="@"
-        if [ "$TRUELINE_USER_SHOW_IP_SSH" = true ]; then
-            user+="$(_trueline_ip_address)"
-        elif [ "$TRUELINE_USER_SHORTEN_HOSTNAME" = true ]; then
-            user+="$(hostname -s)"
-        else
-            user+="$HOSTNAME"
+        if [ "$TRUELINE_USER_SHOW_HOST__SSH" = true ]; then
+            # Show the host portion of the segment
+            user+="@"
+            if [ "$TRUELINE_USER_SHOW_IP__SSH" = true ]; then
+                user+="$(_trueline_ip_address)"
+            elif [ "$TRUELINE_USER_SHORT_HOSTNAME__SSH" = true ]; then
+                user+="$(hostname -s)"
+            else
+                user+="$HOSTNAME"
+            fi
+        fi
+    else
+        # This is a local user
+        user="${TRUELINE_SYMBOLS[local]} $user"
+        if [ "$TRUELINE_USER_SHOW_HOST__LOCAL" = true ]; then
+            # Show the host portion of the segment
+            user+="@"
+            if [ "$TRUELINE_USER_SHOW_IP__LOCAL" = true ]; then
+                user+="$(_trueline_ip_address)"
+            elif [ "$TRUELINE_USER_SHORT_HOSTNAME__LOCAL" = true ]; then
+                user+="$(hostname -s)"
+            else
+                user+="$HOSTNAME"
+            fi
         fi
     fi
     local segment="$(_trueline_separator)"
@@ -525,6 +545,7 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [ps2]='...'
     [read_only]=''
     [segment_separator]=''
+    [local]=''
     [ssh]=''
     [timer]='羽'
     [venv]=''
@@ -576,14 +597,28 @@ fi
 if [[ -z "$TRUELINE_USER_ROOT_COLORS" ]]; then
     TRUELINE_USER_ROOT_COLORS=('black' 'red')
 fi
-if [[ -z "$TRUELINE_USER_SHOW_IP_SSH" ]]; then
-    TRUELINE_USER_SHOW_IP_SSH=false
+if [[ -z "$TRUELINE_USER_SHOW_HOST__SSH" ]]; then
+    TRUELINE_USER_SHOW_HOST__SSH=false
 fi
-if [[ -z "$TRUELINE_USER_ALWAYS_SHOW_HOSTNAME" ]]; then
-    TRUELINE_USER_ALWAYS_SHOW_HOSTNAME=false
+
+if [[ -z "$TRUELINE_USER_SHOW_IP__SSH" ]]; then
+    TRUELINE_USER_SHOW_IP__SSH=false
 fi
-if [[ -z "$TRUELINE_USER_SHORTEN_HOSTNAME" ]]; then
-    TRUELINE_USER_SHORTEN_HOSTNAME=false
+
+if [[ -z "$TRUELINE_USER_SHORT_HOSTNAME__SSH" ]]; then
+    TRUELINE_USER_SHORT_HOSTNAME__SSH=true
+fi
+
+if [[ -z "$TRUELINE_USER_SHOW_HOST__LOCAL" ]]; then
+    TRUELINE_USER_SHOW_HOST__LOCAL=false
+fi
+
+if [[ -z "$TRUELINE_USER_SHOW_IP__LOCAL" ]]; then
+    TRUELINE_USER_SHOW_IP__LOCAL=false
+fi
+
+if [[ -z "$TRUELINE_USER_SHORT_HOSTNAME__LOCAL" ]]; then
+    TRUELINE_USER_SHORT_HOSTNAME__LOCAL=true
 fi
 
 # Working dir
