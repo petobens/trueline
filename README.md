@@ -253,6 +253,11 @@ The next segments have (sub)settings of their own:
     directory is shortened to `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH`.
     - `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1`: length of each parent
         directory when `TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS` is enabled.
+- prompt:
+    - `TRUELINE_SHOW_TRAILING_SEPARATOR=true`: boolean variable that determines 
+    whether to show/hide the segment separator ''. This option should be set to
+    false _only_ with the newline segment when one wants to have a bare/raw prompt 
+    on default terminal background. 
 
 #### External
 

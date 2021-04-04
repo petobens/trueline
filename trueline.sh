@@ -454,12 +454,10 @@ _trueline_prompt_command() {
     done
 
     _trueline_vimode_segment
-    # Provide an option for a segment-enclosed prompt or a raw prompt
-    if [ "$TRUELINE_NEWLINE_PROMPT_WITHOUT_SEGMENT" = true ]; then
-        # Use default_fg and default_bg with this option for a raw prompt
-        PS1+=$(_trueline_content "$_last_color" default_bg bold)
-    else
-        PS1+=$(_trueline_content "$_last_color" default_bg bold "${TRUELINE_SYMBOLS[segment_separator]}")
+    PS1+=$(_trueline_content "$_last_color" default_bg bold)
+    # Provide an option to show/remove the trailing separator
+    if [ "$TRUELINE_SHOW_TRAILING_SEPARATOR" = true ]; then
+        PS1+="${TRUELINE_SYMBOLS[segment_separator]}"
     fi
     PS1+=" " # non-breakable space
     _trueline_continuation_prompt
@@ -590,13 +588,17 @@ fi
 # Working dir
 if [[ -z "$TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR" ]]; then
     TRUELINE_WORKING_DIR_SPACE_BETWEEN_PATH_SEPARATOR=true
-
 fi
 if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" ]]; then
     TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS=false
 fi
 if [[ -z "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH" ]]; then
     TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH=1
+fi
+
+# Prompt
+if [[ -z "$TRUELINE_SHOW_TRAILING_SEPARATOR" ]]; then
+    TRUELINE_SHOW_TRAILING_SEPARATOR=true
 fi
 
 #----------------+
