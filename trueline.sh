@@ -164,7 +164,13 @@ _trueline_aws_profile_segment() {
 }
 
 _trueline_has_git_branch() {
-    printf "%s" "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+    branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+
+    if [[ "$?" -ne "128" ]]; then
+        printf "%s" "$branch"
+    else
+        printf "%s" ""
+    fi
 }
 _trueline_git_mod_files() {
     nr_mod_files="$(git diff --name-only --diff-filter=M 2> /dev/null | wc -l | sed 's/^ *//')"
