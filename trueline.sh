@@ -447,7 +447,7 @@ _trueline_continuation_prompt() {
 }
 
 _trueline_prompt_command() {
-    _exit_status="$?"
+    local _exit_status="$?"
     PS1=""
 
     local segment_def=
@@ -470,7 +470,10 @@ _trueline_prompt_command() {
     unset _first_color_bg
     unset _first_font_style
     unset _last_color
-    unset _exit_status
+
+    # Note: we reset the exit status to the original value for the subsequent
+    # commands in PROMPT_COMMAND.
+    return "$_exit_status"
 }
 
 #---------------+
@@ -607,9 +610,10 @@ fi
 #----------------+
 # PROMPT_COMMAND |
 #----------------+
-# Backup old prompt command first
-if [ -z "$_PROMPT_COMMAND_OLD" ]; then
-    _PROMPT_COMMAND_OLD="$PROMPT_COMMAND"
+if ((BASH_VERSINFO[0] > 5 || BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1)); then
+  # Bash 5.1 and above supports the PROMPT_COMMAND array
+  PROMPT_COMMAND=${PROMPT_COMMAND-}
+  PROMPT_COMMAND+=(_trueline_prompt_command)
+else
+  PROMPT_COMMAND="_trueline_prompt_command${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 fi
-unset PROMPT_COMMAND
-PROMPT_COMMAND=_trueline_prompt_command
