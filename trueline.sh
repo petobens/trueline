@@ -285,7 +285,10 @@ _trueline_working_dir_segment() {
 }
 
 _trueline_bg_jobs_segment() {
-    local bg_jobs=$(jobs -p | wc -l | sed 's/^ *//')
+    # Note: We clear terminated foreground job information by first
+    #   calling `jobs &>/dev/null' and then obtain the information of
+    #   the currently running jobs by `jobs -p'.
+    local bg_jobs=$(jobs &>/dev/null; jobs -p | wc -l | sed 's/^ *//')
     if [[ ! "$bg_jobs" -eq 0 ]]; then
         local fg_color="$1"
         local bg_color="$2"
