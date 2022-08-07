@@ -1,4 +1,4 @@
-# shellcheck disable=SC2155
+# shellcheck disable=SC2155,SC2148
 #---------+
 # Helpers |
 #---------+
@@ -285,10 +285,13 @@ _trueline_working_dir_segment() {
 }
 
 _trueline_bg_jobs_segment() {
-    # Note: We clear terminated foreground job information by first
-    #   calling `jobs &>/dev/null' and then obtain the information of
-    #   the currently running jobs by `jobs -p'.
-    local bg_jobs=$(jobs &>/dev/null; jobs -p | wc -l | sed 's/^ *//')
+    # Note: We clear terminated foreground job information by first calling
+    # `jobs &>/dev/null' and then obtain the information of the currently running
+    # jobs by `jobs -p'.
+    local bg_jobs=$(
+        jobs &> /dev/null
+        jobs -p | wc -l | sed 's/^ *//'
+    )
     if [[ ! "$bg_jobs" -eq 0 ]]; then
         local fg_color="$1"
         local bg_color="$2"
@@ -614,9 +617,10 @@ fi
 # PROMPT_COMMAND |
 #----------------+
 if ((BASH_VERSINFO[0] > 5 || BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1)); then
-  # Bash 5.1 and above supports the PROMPT_COMMAND array
-  PROMPT_COMMAND=${PROMPT_COMMAND-}
-  PROMPT_COMMAND+=(_trueline_prompt_command)
+    # Bash 5.1 and above supports the PROMPT_COMMAND array
+    PROMPT_COMMAND=${PROMPT_COMMAND-}
+    PROMPT_COMMAND+=(_trueline_prompt_command)
 else
-  PROMPT_COMMAND="_trueline_prompt_command${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+    # shellcheck disable=SC2128,SC2178
+    PROMPT_COMMAND="_trueline_prompt_command${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 fi
