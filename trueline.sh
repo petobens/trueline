@@ -525,11 +525,11 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
 fi
 
 declare -A TRUELINE_SYMBOLS_DEFAULT=(
-    [aws_profile]=''
+    [aws_profile]=''
     [bg_jobs]=''
     [exit_status]=''
-    [git_ahead]=''
-    [git_behind]=''
+    [git_ahead]=''
+    [git_behind]=''
     [git_bitbucket]=''
     [git_branch]=''
     [git_github]=''
@@ -540,8 +540,8 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [ps2]='...'
     [read_only]=''
     [segment_separator]=''
-    [ssh]=''
-    [timer]='羽'
+    [ssh]='󰌘'
+    [timer]='󰔟'
     [venv]=''
     [vimode_cmd]='N'
     [vimode_ins]='I'
