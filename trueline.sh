@@ -362,6 +362,7 @@ _trueline_vimode_cursor_shape() {
             cursor_parameter=2
             ;;
     esac
+    # shellcheck disable=SC2028
     echo "\1\e[$cursor_parameter q\2"
 }
 _trueline_vimode_segment() {
