@@ -445,6 +445,34 @@ _trueline_cmd_duration_segment() {
     fi
 }
 
+_trueline_distro_icon_segment() {
+    
+    set_distribution_icon() {
+        case "$(uname -a)" in
+            *ubuntu*) distro_icon=" " ;;
+            *fedora*) distro_icon=" " ;;
+            *debian*) distro_icon=" " ;;
+            *arch*) distro_icon=" " ;;
+            *) distro_icon=" " ;;
+        esac
+    }
+
+    # Call the set_distribution_icon function to set the distro_icon.
+    set_distribution_icon
+
+    local some_content="$distro_icon"
+
+    if [[ -n "$some_content" ]]; then
+        local fg_color="$1"
+        local bg_color="$2"
+        local font_style="$3"
+        local segment="$(_trueline_separator)"
+        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $some_content ")"
+        PS1+="$segment"
+        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
+    fi
+}
+
 #-------------+
 # PS1 and PS2 |
 #-------------+
