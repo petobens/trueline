@@ -457,13 +457,11 @@ _trueline_distro_icon_segment() {
         *) distro_icon="${TRUELINE_SYMBOLS[empty_distribution]} " ;;
     esac
     
-    local choosed_distribution_icon="$distro_icon"
-    
     local fg_color="$1"
     local bg_color="$2"
     local font_style="$3"
     local segment="$(_trueline_separator)"
-    segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $choosed_distribution_icon ")"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $distro_icon ")"
     PS1+="$segment"
     _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
 
@@ -546,7 +544,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'exit_status,black,red,bold'        
         # 'cmd_duration,black,grey,normal'
         # 'newline,black,orange,bold'
-        # 'distro_icon, black, green, normal'
+        # 'distro_icon,black,green,normal'
     )
 fi
 
@@ -576,7 +574,6 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [working_dir_separator]=''
     [empty_distribution]=' '
 )
-
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=()
 fi
