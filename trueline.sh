@@ -447,22 +447,17 @@ _trueline_cmd_duration_segment() {
 
 _trueline_distro_icon_segment() {
     
-    set_distribution_icon() {
-        case "$(uname -a)" in
-            *ubuntu*) distro_icon=" " ;;
-            *fedora*) distro_icon=" " ;;
-            *debian*) distro_icon=" " ;;
-            *arch*) distro_icon=" " ;;
-            Linux*) distro_icon=" " ;;
-            *) distro_icon="${TRUELINE_SYMBOLS[empty_distribution]} " ;;
-        esac
-    }
-
-    # Call the set_distribution_icon function to set the distro_icon.
-    set_distribution_icon
-
+    
+    case "$(uname -a)" in
+        *ubuntu*) distro_icon=" " ;;
+        *fedora*) distro_icon=" " ;;
+        *debian*) distro_icon=" " ;;
+        *arch*) distro_icon=" " ;;
+        Linux*) distro_icon=" " ;;
+        *) distro_icon="${TRUELINE_SYMBOLS[empty_distribution]} " ;;
+    esac
+    
     local choosed_distribution_icon="$distro_icon"
-
     
     local fg_color="$1"
     local bg_color="$2"
@@ -548,10 +543,10 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'working_dir,mono,cursor_grey,normal'
         'read_only,black,orange,bold'
         'bg_jobs,black,orange,bold'
-        'exit_status,black,red,bold'
-        # 'distro_icon, black, green, normal'
+        'exit_status,black,red,bold'        
         # 'cmd_duration,black,grey,normal'
         # 'newline,black,orange,bold'
+        # 'distro_icon, black, green, normal'
     )
 fi
 
