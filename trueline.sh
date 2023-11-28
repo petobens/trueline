@@ -446,8 +446,6 @@ _trueline_cmd_duration_segment() {
 }
 
 _trueline_distro_icon_segment() {
-    
-    
     case "$(uname -a)" in
         *ubuntu*) distro_icon=" " ;;
         *fedora*) distro_icon=" " ;;
