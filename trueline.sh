@@ -453,24 +453,25 @@ _trueline_distro_icon_segment() {
             *fedora*) distro_icon=" " ;;
             *debian*) distro_icon=" " ;;
             *arch*) distro_icon=" " ;;
-            *) distro_icon=" " ;;
+            Linux*) distro_icon=" " ;;
+            *) distro_icon="${TRUELINE_SYMBOLS[empty_distribution]} " ;;
         esac
     }
 
     # Call the set_distribution_icon function to set the distro_icon.
     set_distribution_icon
 
-    local some_content="$distro_icon"
+    local choosed_distribution_icon="$distro_icon"
 
-    if [[ -n "$some_content" ]]; then
-        local fg_color="$1"
-        local bg_color="$2"
-        local font_style="$3"
-        local segment="$(_trueline_separator)"
-        segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $some_content ")"
-        PS1+="$segment"
-        _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
-    fi
+    
+    local fg_color="$1"
+    local bg_color="$2"
+    local font_style="$3"
+    local segment="$(_trueline_separator)"
+    segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $choosed_distribution_icon ")"
+    PS1+="$segment"
+    _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
+
 }
 
 #-------------+
@@ -548,6 +549,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'read_only,black,orange,bold'
         'bg_jobs,black,orange,bold'
         'exit_status,black,red,bold'
+        # 'distro_icon, black, green, normal'
         # 'cmd_duration,black,grey,normal'
         # 'newline,black,orange,bold'
     )
@@ -577,7 +579,9 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [working_dir_folder]=''
     [working_dir_home]=''
     [working_dir_separator]=''
+    [empty_distribution]=' '
 )
+
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=()
 fi
