@@ -451,7 +451,6 @@ _trueline_distro_icon_segment() {
         *fedora*) distro_icon=" " ;;
         *debian*) distro_icon=" " ;;
         *arch*) distro_icon=" " ;;
-        Linux*) distro_icon=" " ;;
         *) distro_icon="${TRUELINE_SYMBOLS[empty_distribution]} " ;;
     esac
     
