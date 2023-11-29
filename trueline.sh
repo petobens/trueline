@@ -462,7 +462,6 @@ _trueline_distro_icon_segment() {
     segment+="$(_trueline_content "$fg_color" "$bg_color" "$font_style" " $distro_icon ")"
     PS1+="$segment"
     _trueline_record_colors "$fg_color" "$bg_color" "$font_style"
-
 }
 
 #-------------+
