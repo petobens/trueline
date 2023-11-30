@@ -537,7 +537,7 @@ if [[ "${#TRUELINE_SEGMENTS[@]}" -eq 0 ]]; then
         'working_dir,mono,cursor_grey,normal'
         'read_only,black,orange,bold'
         'bg_jobs,black,orange,bold'
-        'exit_status,black,red,bold' 
+        'exit_status,black,red,bold'
         # 'cmd_duration,black,grey,normal'
         # 'newline,black,orange,bold'
         # 'distro_icon,black,green,normal'
