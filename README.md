@@ -1,15 +1,16 @@
 # Trueline: Bash Powerline Style Prompt with True Color Support
 
 <!--toc:start-->
-- [Installation](#installation)
-- [Customization](#customization)
-  - [Colors](#colors)
-  - [Segments](#segments)
-  - [Symbols](#symbols)
-  - [Options](#options)
-    - [Intra-segment](#intra-segment)
-    - [External](#external)
-  - [Extensions](#extensions)
+- [Trueline: Bash Powerline Style Prompt with True Color Support](#trueline-bash-powerline-style-prompt-with-true-color-support)
+  - [Installation](#installation)
+  - [Customization](#customization)
+    - [Colors](#colors)
+    - [Segments](#segments)
+    - [Symbols](#symbols)
+    - [Options](#options)
+      - [Intra-segment](#intra-segment)
+      - [External](#external)
+    - [Extensions](#extensions)
 <!--toc:end-->
 
 Trueline is a fast and extensible [Powerline](https://github.com/powerline/powerline)
@@ -179,6 +180,7 @@ by default):
 | user         | enabled  | username and host (conditional on ssh status) |
 | venv         | enabled  | Python virtual environment                    |
 | working_dir  | enabled  | current working directory                     |
+| distro_icon  | disabled | current Linux distribution icon               |
 
 but more segments can be easily added (see [Extensions](#extensions)).
 
