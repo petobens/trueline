@@ -453,7 +453,7 @@ _trueline_distro_icon_segment() {
         *arch*) distro_icon=" " ;;
         *) distro_icon="${TRUELINE_SYMBOLS[distro_icon]} " ;;
     esac
-    
+
     local fg_color="$1"
     local bg_color="$2"
     local font_style="$3"
@@ -547,6 +547,7 @@ fi
 declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [aws_profile]=''
     [bg_jobs]=''
+    [distro_icon]=' '
     [exit_status]=''
     [git_ahead]=''
     [git_behind]=''
@@ -568,7 +569,6 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [working_dir_folder]=''
     [working_dir_home]=''
     [working_dir_separator]=''
-    [distro_icon]=' '
 )
 if [[ "${#TRUELINE_SYMBOLS[@]}" -eq 0 ]]; then
     declare -A TRUELINE_SYMBOLS=()

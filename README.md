@@ -214,8 +214,9 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 
 | Symbol Name   | Glyph  |     | Symbol Name           | Glyph  |
 | ------------- | ------ | --- | --------------------- | ------ |
-| aws_profile   | U+f52c |     | ps2                   | ...    |
-| bg_jobs       | U+f085 |     | read_only             | U+f023 |
+| aws_profile   | U+f52c |     | newline_root          | U+f52c |
+| bg_jobs       | U+f085 |     | ps2                   | ...    |
+| distro_icon   | U+ebc6 |     | read_only             | U+f023 |
 | exit_status   | blank  |     | segment_separator     | U+e0b0 |
 | git_ahead     | U+f55c |     | ssh                   | U+f817 |
 | git_behind    | U+f544 |     | timer                 | U+fa1e |
@@ -225,7 +226,6 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | git_gitlab    | U+f296 |     | working_dir_folder    | U+e5fe |
 | git_modified  | U+f44d |     | working_dir_home      | U+f015 |
 | newline       | U+f155 |     | working_dir_separator | U+e0b1 |
-| newline_root  | U+f52c |
 
 As with `TRUELINE_COLORS`, any `TRUELINE_SYMBOLS` array defined in the bashrc file
 prior to sourcing the Trueline script will actually update the array with the default
