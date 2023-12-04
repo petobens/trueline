@@ -256,7 +256,7 @@ _trueline_working_dir_segment() {
         wd_separator=" $wd_separator "
     fi
 
-    local p="${PWD/$HOME/${TRUELINE_SYMBOLS[working_dir_home]}}"
+    local p="${PWD/#$HOME/${TRUELINE_SYMBOLS[working_dir_home]}}"
     local arr=
     IFS='/' read -r -a arr <<< "$p"
     local path_size="${#arr[@]}"
@@ -269,7 +269,7 @@ _trueline_working_dir_segment() {
             if [[ "$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS" = true ]]; then
                 p=$(echo "$p" | sed -r "s:([^/]{,$TRUELINE_WORKING_DIR_ABBREVIATE_PARENT_DIRS_LENGTH})[^/]*/:\1/:g")
             else
-                p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | rev | cut -d '/' -f-3 | rev)
+                p="${TRUELINE_SYMBOLS[working_dir_folder]}/"$(echo "$p" | awk -F'/' '{n=NF; print $(n-2)"/"$(n-1)"/"$n}')
             fi
         fi
         local curr=$(basename "$p")
