@@ -217,7 +217,7 @@ values (i.e either the actual glyph or the corresponding nerd-font unicode code)
 | aws_profile   | U+f52c |     | newline_root          | U+f52c |
 | bg_jobs       | U+f085 |     | ps2                   | ...    |
 | distro_icon   | U+ebc6 |     | read_only             | U+f023 |
-| exit_status   | blank  |     | segment_separator     | U+e0b0 |
+| exit_status   | U+ea87 |     | segment_separator     | U+e0b0 |
 | git_ahead     | U+f55c |     | ssh                   | U+f817 |
 | git_behind    | U+f544 |     | timer                 | U+fa1e |
 | git_bitbucket | U+f171 |     | venv (and conda)      | U+e73c |
