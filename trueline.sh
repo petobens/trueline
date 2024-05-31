@@ -217,6 +217,8 @@ _trueline_git_remote_icon() {
         remote_icon="${TRUELINE_SYMBOLS[git_bitbucket]} "
     elif [[ "$remote" =~ "gitlab" ]]; then
         remote_icon="${TRUELINE_SYMBOLS[git_gitlab]} "
+    elif [[ "$remote" =~ "codeberg" ]]; then
+        remote_icon="${TRUELINE_SYMBOLS[git_codeberg]} "
     fi
     if [[ -n "${remote_icon// /}" ]]; then
         remote_icon=" $remote_icon "
@@ -553,6 +555,7 @@ declare -A TRUELINE_SYMBOLS_DEFAULT=(
     [git_behind]=''
     [git_bitbucket]=''
     [git_branch]=''
+    [git_codeberg]=''
     [git_github]=''
     [git_gitlab]=''
     [git_modified]=''
