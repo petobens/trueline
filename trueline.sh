@@ -448,11 +448,17 @@ _trueline_cmd_duration_segment() {
 }
 
 _trueline_distro_icon_segment() {
-    case "$(grep ^ID= /etc/os-release)" in
-        *ubuntu*) distro_icon=" " ;;
-        *fedora*) distro_icon=" " ;;
-        *debian*) distro_icon=" " ;;
-        *arch*) distro_icon=" " ;;
+    case "$(uname -s)" in
+        Linux*)
+            case "$(grep ^ID= /etc/os-release)" in
+                *ubuntu*) distro_icon=" " ;;
+                *fedora*) distro_icon=" " ;;
+                *debian*) distro_icon=" " ;;
+                *arch*) distro_icon=" " ;;
+                *) distro_icon="${TRUELINE_SYMBOLS[distro_icon]} " ;;
+            esac
+            ;;
+        Darwin*) distro_icon=" " ;;
         *) distro_icon="${TRUELINE_SYMBOLS[distro_icon]} " ;;
     esac
 
